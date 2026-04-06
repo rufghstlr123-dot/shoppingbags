@@ -1481,7 +1481,7 @@ input:disabled, select:disabled, textarea:disabled {
     padding: 0 !important;
     margin: 0 !important;
     outline: none !important;
-    font-family: inherit;
+    font-family: 'Happiness-Sans-Title', 'Outfit', sans-serif;
     height: 32px !important;
     line-height: 32px !important;
     box-shadow: none !important;
