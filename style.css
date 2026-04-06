@@ -1507,43 +1507,6 @@ input:disabled, select:disabled, textarea:disabled {
 .stock-card[data-size="M"]::before { background: #6366f1; }
 .stock-card[data-size="S"]::before { background: #94a3b8; }
 
-.card-head {
-    margin-bottom: 2px;
-}
-
-.badge {
-    padding: 1px 6px;
-    font-size: 0.65rem;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-}
-
-.in-icon, .out-icon, i[data-lucide] {
-    width: 14px;
-    height: 14px;
-}
-
-.stock-value {
-    font-size: 1.85rem; /* Explosion of legibility */
-    font-weight: 950;
-    color: #0f172a;
-    line-height: 1;
-    margin-top: 1px;
-    letter-spacing: -0.03em;
-}
-
-.stock-label {
-    font-size: 0.62rem; /* Even more compact to favor the value */
-    font-weight: 700;
-    color: #64748b;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 2px;
-}
-
-.tag-xl { background: #064e3b; color: white; }
-.tag-l { background: #0c4a6e; color: white; }
-.tag-m { background: #4338ca; color: white; }
-.tag-s { background: #475569; color: white; }
 
 /* Right Sidebar - Full-Area Notepad Station (Restored) */
 .right-sidebar {
