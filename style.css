@@ -1456,6 +1456,28 @@ input:disabled, select:disabled, textarea:disabled {
     position: relative;
     height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
+    cursor: default; /* Ensure card itself doesn't steal focus intent */
+}
+
+.real-input {
+    display: block;
+    width: 100%;
+    border: none !important;
+    background: transparent !important;
+    font-size: 1.85rem;
+    font-weight: 950;
+    color: #000000;
+    text-align: center;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    font-family: inherit;
+    height: 32px !important;
+    line-height: 32px !important;
+    box-shadow: none !important;
+    position: relative;
+    z-index: 50; /* Above all card decorations */
+    pointer-events: auto !important; /* Force clickability */
 }
 
 .stock-card:hover {
@@ -1467,6 +1489,7 @@ input:disabled, select:disabled, textarea:disabled {
     content: '';
     position: absolute;
     top: 0; left: 0; width: 100%; height: 2px;
+    pointer-events: none; /* Crucial: Never block clicks */
 }
 
 .stock-card[data-size="XL"]::before { background: var(--primary); }

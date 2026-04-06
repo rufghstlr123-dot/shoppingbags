@@ -127,32 +127,32 @@ function setupEventListeners() {
         input.addEventListener('focus', function() { if (this.value === '0') this.value = ''; });
     });
 
-    // Real-time listener for Physical Stock inputs (Fixed Input Lock & Cursor Jump)
+    // Real-time listener for Physical Stock inputs (Absolute Robust Sync)
     document.querySelectorAll('.real-input').forEach(input => {
+        input.addEventListener('mousedown', (e) => e.stopPropagation());
+        input.addEventListener('click', (e) => e.stopPropagation());
+        
         input.addEventListener('input', function() {
-            // Keep it raw during typing to prevent cursor issues
+            // High-speed filtering
             let val = this.value.replace(/[^0-9]/g, '');
-            
-            // Temporary local state update
             const sz = this.id.split('-')[1];
             const numVal = parseInt(val, 10) || 0;
-            state.realStock[sz] = numVal;
             
-            // Instantly push to Firebase for Persistence
-            if (db) {
-                db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
-            }
+            // Sync without update loop
+            state.realStock[sz] = numVal;
+            if (db) db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
+            
+            // Keep cursor at the end for smooth typing
+            this.value = val; 
         });
 
         input.addEventListener('blur', function() {
-            // Format only when leaving the input
             const numVal = parseInt(this.value.replace(/[^0-9]/g, ''), 10) || 0;
             this.value = numVal.toLocaleString();
         });
 
         input.addEventListener('focus', function() {
-            // Remove comma for easier editing when focused
-            let val = this.value.replace(/[^0-9]/g, '');
+            const val = this.value.replace(/[^0-9]/g, '');
             this.value = val === '0' ? '' : val;
         });
     });
