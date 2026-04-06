@@ -130,12 +130,25 @@ function setupEventListeners() {
     // Real-time listener for Physical Stock inputs
     document.querySelectorAll('.real-input').forEach(input => {
         input.addEventListener('input', function() {
+            // Remove everything except numbers
             let val = this.value.replace(/[^0-9]/g, '');
-            // Real-time Broadcaster for all users
+            
+            // Temporary local state update
             const sz = this.id.split('-')[1];
-            const rawVal = parseInt(val, 10) || 0;
-            state.realStock[sz] = rawVal;
-            if (db) db.ref('sb_inventory/realStock').set(state.realStock);
+            const numVal = parseInt(val, 10) || 0;
+            state.realStock[sz] = numVal;
+            
+            // Instantly push to Firebase
+            if (db) {
+                db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
+            }
+            
+            // Format for display
+            this.value = numVal.toLocaleString();
+        });
+
+        input.addEventListener('blur', function() {
+            if (this.value === '') this.value = '0';
         });
     });
 
@@ -287,6 +300,7 @@ function renderDashboard() {
         const realEl = document.getElementById(`real-${sz}`);
         
         if (realEl) {
+            // CRITICAL: Only update value if the user is NOT currently typing in THIS field
             if (document.activeElement !== realEl) {
                 realEl.value = real.toLocaleString();
             }
