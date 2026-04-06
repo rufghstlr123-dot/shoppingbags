@@ -509,16 +509,16 @@ input:disabled, select:disabled, textarea:disabled {
 .quantities-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
+    gap: 12px;
     background: transparent;
     padding: 0;
-    margin: 24px 0 32px; /* Reduced margins */
+    margin: 12px 0 20px; /* Reduced margins */
 }
 
 .stat-input label {
     display: block;
-    font-size: 0.95rem;
-    margin-bottom: 10px;
+    font-size: 0.85rem;
+    margin-bottom: 6px;
     color: var(--primary);
     font-weight: 700;
 }
@@ -530,7 +530,7 @@ input:disabled, select:disabled, textarea:disabled {
     font-weight: 700;
     font-size: 1.1rem;
     color: #000000;
-    padding: 16px 10px;
+    padding: 10px;
     border: 1px solid #e2e8f0;
     border-radius: var(--radius-sm);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
@@ -547,7 +547,7 @@ input:disabled, select:disabled, textarea:disabled {
     background: var(--primary);
     color: white;
     border: 2px solid rgba(255, 255, 255, 0.1);
-    padding: 16px; /* Slightly reduced padding */
+    padding: 12px; /* Slightly reduced padding */
     border-radius: var(--radius-md);
     font-size: 1.1rem;
     font-weight: 700;
@@ -555,6 +555,7 @@ input:disabled, select:disabled, textarea:disabled {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 10px 20px rgba(0, 76, 69, 0.15);
     letter-spacing: 0.05em;
+    margin-top: 4px;
 }
 
 .submit-btn:hover {
@@ -1380,7 +1381,8 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Dashboard Tab: Fixed Zero-Scroll Cockpit */
-#dashboard.tab-content.active {
+#dashboard.tab-content.active,
+#in-out.tab-content.active {
     display: flex !important;
     flex-direction: column;
     justify-content: space-between;
@@ -1390,7 +1392,6 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Other Tabs: Allow Natural Scrolling for Long Content */
-#in-out.tab-content.active,
 #history.tab-content.active,
 #reports.tab-content.active {
     overflow-y: auto;
