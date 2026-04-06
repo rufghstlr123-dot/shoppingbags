@@ -1009,65 +1009,19 @@ input:disabled, select:disabled, textarea:disabled {
     max-width: 800px;
 }
 
-.landing-visual {
-    margin-bottom: 40px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.floating-box {
-    width: 100px;
-    height: 100px;
-    background: #ffffff;
-    color: #064e3b;
-    border-radius: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.3), 0 0 30px rgba(6, 78, 59, 0.5);
-    margin-bottom: 24px;
-    animation: floating 3s infinite ease-in-out;
-}
-
-.floating-box i { width: 50px; height: 50px; }
-
-@keyframes floating {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-15px); }
-}
-
-.status-badge {
-    background: rgba(255, 255, 255, 0.1);
-    color: #ffffff;
-    padding: 6px 16px;
-    border-radius: 100px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
 .brand-title {
     font-size: 3.5rem;
     font-weight: 800;
     color: #ffffff;
-    line-height: 1.2;
-    margin-bottom: 24px;
+    line-height: 1.25;
+    margin-bottom: 56px; /* Massive spacing into action */
     letter-spacing: -0.02em;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-}
-
-.brand-desc {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 1.25rem;
-    margin-bottom: 60px;
-    line-height: 1.6;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
 }
 
 .glow-btn {
-    padding: 20px 80px;
-    font-size: 1.4rem;
+    padding: 22px 100px; /* Stronger button */
+    font-size: 1.5rem;
     font-weight: 800;
     color: #064e3b;
     background: #ffffff;
@@ -1076,7 +1030,7 @@ input:disabled, select:disabled, textarea:disabled {
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 50px rgba(255, 255, 255, 0.2);
     margin: 0 auto;
@@ -1093,14 +1047,7 @@ input:disabled, select:disabled, textarea:disabled {
     color: #064e3b;
     transform: translateY(-8px) scale(1.08);
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(252, 211, 77, 0.6);
-}
-
-.landing-footer {
-    position: absolute;
-    bottom: 40px;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
+    animation: none; /* Pause pulse on hover */
 }
 
 /* Original Legacy Landing Classes (Safety Removal) */
