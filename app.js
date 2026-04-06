@@ -284,20 +284,10 @@ function renderDashboard() {
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
         
         const realEl = document.getElementById(`real-${sz}`);
-        const warnEl = document.getElementById(`warn-${sz}`);
         
         if (realEl) {
             if (document.activeElement !== realEl) {
                 realEl.value = real.toLocaleString();
-            }
-            
-            // Warning logic: If physical stock doesn't match digital stock
-            if (warnEl) {
-                if (real !== stock) {
-                    warnEl.innerHTML = '<i data-lucide="alert-triangle" class="warning-icon"></i>';
-                } else {
-                    warnEl.innerHTML = '';
-                }
             }
         }
     });

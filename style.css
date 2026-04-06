@@ -1263,26 +1263,25 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Dashboard Color Coding */
-.in-text {
-    color: #2563eb !important; /* Blue for Incoming */
-    font-weight: 700;
+.stock-value {
+    font-size: 1.85rem;
+    font-weight: 950;
+    color: #000000;
+    text-align: center;
+    margin: 4px 0;
+    letter-spacing: -0.02em;
 }
 
-.out-text {
-    color: #dc2626 !important; /* Red for Outgoing */
-    font-weight: 700;
-}
-
-.in-icon { color: #3b82f6; opacity: 0.8; }
-.real-icon { color: #f59e0b; }
-.real-text { color: #f59e0b; }
+.in-text { color: #000000; }
+.out-text { color: #000000; }
+.real-text { color: #000000; }
 .real-input {
     width: 100%;
     border: none;
     background: transparent;
     font-size: 1.85rem;
     font-weight: 950;
-    color: #f59e0b;
+    color: #000000;
     text-align: center;
     padding: 0;
     margin: 4px 0;
