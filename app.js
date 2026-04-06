@@ -124,6 +124,20 @@ function setupEventListeners() {
         input.addEventListener('focus', function() { if (this.value === '0') this.value = ''; });
     });
 
+    // Real-time listener for Physical Stock inputs
+    document.querySelectorAll('.real-input').forEach(input => {
+        input.addEventListener('input', function() {
+            let val = this.value.replace(/[^0-9]/g, '');
+            this.value = val ? parseInt(val, 10).toLocaleString() : '';
+            
+            // Auto-save to Firebase
+            const sz = this.id.split('-')[1];
+            const rawVal = parseInt(val, 10) || 0;
+            state.realStock[sz] = rawVal;
+            if (db) db.ref('sb_inventory/realStock').set(state.realStock);
+        });
+    });
+
     document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
     document.getElementById('entry-part').addEventListener('change', updateTeamDisplay);
     document.getElementById('edit-part').addEventListener('change', () => {
@@ -270,19 +284,24 @@ function renderDashboard() {
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
         
         const realEl = document.getElementById(`real-${sz}`);
+        const warnEl = document.getElementById(`warn-${sz}`);
+        
         if (realEl) {
-            realEl.textContent = real.toLocaleString();
-            realEl.closest('.stock-card').style.cursor = 'pointer';
-            // Simple click to edit for real-stock
-            realEl.closest('.stock-card').onclick = () => {
-                const newVal = prompt(`${sz} 사이즈 실재고를 입력하세요:`, real);
-                if (newVal !== null && !isNaN(newVal)) {
-                    state.realStock[sz] = parseInt(newVal, 10);
-                    if (db) db.ref('sb_inventory/realStock').set(state.realStock);
+            if (document.activeElement !== realEl) {
+                realEl.value = real.toLocaleString();
+            }
+            
+            // Warning logic: If physical stock doesn't match digital stock
+            if (warnEl) {
+                if (real !== stock) {
+                    warnEl.innerHTML = '<i data-lucide="alert-triangle" class="warning-icon"></i>';
+                } else {
+                    warnEl.innerHTML = '';
                 }
-            };
+            }
         }
     });
+    lucide.createIcons();
 }
 
 function renderHistory() {
