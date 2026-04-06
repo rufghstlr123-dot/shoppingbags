@@ -1236,6 +1236,7 @@ input:disabled, select:disabled, textarea:disabled {
     color: #000000;
     text-align: center;
     margin: 0 !important; /* Force zero margin */
+    margin-top: 2px; /* Slight nudge up */
     letter-spacing: -0.02em;
     height: 32px;
     line-height: 32px;
@@ -1447,12 +1448,13 @@ input:disabled, select:disabled, textarea:disabled {
 .stock-card {
     background: white;
     border-radius: 10px;
-    padding: 10px 14px;
+    padding: 10px 14px 6px; /* Tight bottom padding */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start; /* UPWARD ALIGNMENT */
+    gap: 4px; /* Tight gap between badge and value */
     position: relative;
     height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
@@ -1470,6 +1472,7 @@ input:disabled, select:disabled, textarea:disabled {
     text-align: center;
     padding: 0 !important;
     margin: 0 !important;
+    margin-top: 2px; /* Slight nudge for breathing space */
     outline: none !important;
     font-family: inherit;
     height: 32px !important;
