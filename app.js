@@ -27,7 +27,7 @@ let state = {
     realStock: { XL: 0, L: 0, M: 0, S: 0 }
 };
 
-const PRICES = { XL: 730, L: 520, M: 350, S: 240 };
+const PRICES = { XL: 249, L: 197, M: 171, S: 148 };
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
 
 // Initial setup
