@@ -1270,23 +1270,30 @@ input:disabled, select:disabled, textarea:disabled {
     text-align: center;
     margin: 4px 0;
     letter-spacing: -0.02em;
+    height: 38px;
+    line-height: 38px;
 }
 
 .in-text { color: #000000; }
 .out-text { color: #000000; }
 .real-text { color: #000000; }
+
 .real-input {
+    display: block;
     width: 100%;
-    border: none;
-    background: transparent;
+    border: none !important;
+    background: transparent !important;
     font-size: 1.85rem;
     font-weight: 950;
     color: #000000;
     text-align: center;
-    padding: 0;
-    margin: 4px 0;
-    outline: none;
+    padding: 0 !important;
+    margin: 4px 0 !important;
+    outline: none !important;
     font-family: inherit;
+    height: 38px !important;
+    line-height: 38px !important;
+    box-shadow: none !important;
 }
 .warning-icon {
     position: absolute;
@@ -1435,12 +1442,13 @@ input:disabled, select:disabled, textarea:disabled {
     flex: 1;
     display: flex;
     flex-direction: column;
-    padding: 6px 12px;
+    padding: 8px 12px;
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.5);
     border: 1px solid rgba(0, 0, 0, 0.03);
     overflow: hidden;
     transition: all 0.3s ease;
+    min-height: 110px; /* Force consistent minimal height */
 }
 
 .dashboard-section[data-type="in"] { background: rgba(37, 99, 235, 0.04); border-left: 5px solid #2563eb; }
@@ -1472,14 +1480,14 @@ input:disabled, select:disabled, textarea:disabled {
 .stock-card {
     background: white;
     border-radius: 10px;
-    padding: 6px 14px; /* Reduced vertical padding */
+    padding: 10px 14px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
     justify-content: center;
     position: relative;
-    max-height: 80px; /* Further compression */
+    height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
 }
 
