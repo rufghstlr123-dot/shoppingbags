@@ -1448,17 +1448,34 @@ input:disabled, select:disabled, textarea:disabled {
 .stock-card {
     background: white;
     border-radius: 10px;
-    padding: 10px 14px 6px; /* Tight bottom padding */
+    padding: 0; /* Clear padding for accurate centering */
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* UPWARD ALIGNMENT */
-    gap: 4px; /* Tight gap between badge and value */
+    align-items: center; /* Horizontally center */
+    justify-content: center; /* Vertically center */
     position: relative;
     height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
-    cursor: default; /* Ensure card itself doesn't steal focus intent */
+    cursor: default;
+    overflow: hidden;
+}
+
+/* Position Badge and Icon to corners to free the center */
+.stock-card .badge {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    transform: scale(0.85); /* Slightly smaller for elegance */
+    transform-origin: top left;
+}
+
+.stock-card i {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    opacity: 0.8;
 }
 
 .real-input {
@@ -1472,15 +1489,14 @@ input:disabled, select:disabled, textarea:disabled {
     text-align: center;
     padding: 0 !important;
     margin: 0 !important;
-    margin-top: 2px; /* Slight nudge for breathing space */
     outline: none !important;
     font-family: inherit;
     height: 32px !important;
     line-height: 32px !important;
     box-shadow: none !important;
     position: relative;
-    z-index: 50; /* Above all card decorations */
-    pointer-events: auto !important; /* Force clickability */
+    z-index: 50;
+    pointer-events: auto !important;
 }
 
 .stock-card:hover {
