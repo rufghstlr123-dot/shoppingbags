@@ -23,7 +23,8 @@ let state = {
     entries: [],
     currentView: 'dashboard',
     entryType: 'in',
-    notepad: ''
+    notepad: '',
+    realStock: { XL: 0, L: 0, M: 0, S: 0 }
 };
 
 const PRICES = { XL: 730, L: 520, M: 350, S: 240 };
@@ -44,6 +45,7 @@ function initApp() {
             if (data) {
                 state.entries = data.entries || [];
                 state.notepad = data.notepad || '';
+                state.realStock = data.realStock || { XL: 0, L: 0, M: 0, S: 0 };
                 
                 // Sync UI with Cloud Data
                 const np = document.getElementById('global-notepad');
@@ -262,9 +264,24 @@ function renderDashboard() {
     });
     ['XL', 'L', 'M', 'S'].forEach(sz => {
         const stock = totals.in[sz] - totals.out[sz];
+        const real = state.realStock ? (state.realStock[sz] || 0) : 0;
         document.getElementById(`stock-${sz}`).textContent = stock.toLocaleString();
         document.getElementById(`in-${sz}`).textContent = totals.in[sz].toLocaleString();
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
+        
+        const realEl = document.getElementById(`real-${sz}`);
+        if (realEl) {
+            realEl.textContent = real.toLocaleString();
+            realEl.closest('.stock-card').style.cursor = 'pointer';
+            // Simple click to edit for real-stock
+            realEl.closest('.stock-card').onclick = () => {
+                const newVal = prompt(`${sz} 사이즈 실재고를 입력하세요:`, real);
+                if (newVal !== null && !isNaN(newVal)) {
+                    state.realStock[sz] = parseInt(newVal, 10);
+                    if (db) db.ref('sb_inventory/realStock').set(state.realStock);
+                }
+            };
+        }
     });
 }
 
