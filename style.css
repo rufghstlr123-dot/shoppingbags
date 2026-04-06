@@ -1485,7 +1485,7 @@ input:disabled, select:disabled, textarea:disabled {
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     position: relative;
     height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
