@@ -47,10 +47,13 @@ function initApp() {
                 state.notepad = data.notepad || '';
                 state.realStock = data.realStock || { XL: 0, L: 0, M: 0, S: 0 };
                 
-                // Sync UI with Cloud Data
+                // Real-time Global Sync for Notepad & Dashboard
                 const np = document.getElementById('global-notepad');
-                if (np && np.value !== state.notepad) np.value = state.notepad;
+                if (np && np.value !== state.notepad && document.activeElement !== np) {
+                    np.value = state.notepad;
+                }
                 
+                // Instantly refresh all views for all users without refresh
                 renderDashboard();
                 renderHistory();
                 renderReports();
@@ -128,9 +131,7 @@ function setupEventListeners() {
     document.querySelectorAll('.real-input').forEach(input => {
         input.addEventListener('input', function() {
             let val = this.value.replace(/[^0-9]/g, '');
-            this.value = val ? parseInt(val, 10).toLocaleString() : '';
-            
-            // Auto-save to Firebase
+            // Real-time Broadcaster for all users
             const sz = this.id.split('-')[1];
             const rawVal = parseInt(val, 10) || 0;
             state.realStock[sz] = rawVal;
