@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>쇼핑백 재고 관리 시스템 | Shopping Bag Inventory</title>
+    <meta name="description" content="쇼핑백 입고 및 불출 수량을 효율적으로 관리하고 실시간 재고를 파악하는 스마트 관리 솔루션입니다.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Page Overlay (Disabled Temporarily)
+    <div id="landing-page" class="landing-page">
+        <div class="landing-content">
+            <h1>현대프리미엄아울렛 대전점<br>쇼핑백 재고 관리 홈페이지</h1>
+            <button id="enter-btn" class="enter-btn">접속하기</button>
+        </div>
+    </div>
+    -->
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i data-lucide="shopping-bag" class="logo-icon"></i>
+                    <span>쇼핑백 관리 대장</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="dashboard">
+                    <i data-lucide="layout-dashboard"></i> 대시보드
+                </button>
+                <button class="nav-item" data-tab="in-out">
+                    <i data-lucide="list-plus"></i> 입고 / 불출 등록
+                </button>
+                <button class="nav-item" data-tab="history">
+                    <i data-lucide="history"></i> 거래 내역
+                </button>
+                <button class="nav-item" data-tab="reports">
+                    <i data-lucide="bar-chart-3"></i> 데이터 분석
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1 id="tab-title">대시보드</h1>
+                    <p id="tab-subtitle"></p>
+                </div>
+            </header>
+
+            <div class="tabs-container">
+                <!-- Dashboard Content -->
+                <section id="dashboard" class="tab-content active">
+                    <!-- 1. Incoming -->
+                    <div class="dashboard-section" data-type="in">
+                        <div class="section-title">
+                            <h3>입고</h3>
+                        </div>
+                        <div class="stock-cards-grid">
+                            <div class="stock-card" data-size="XL">
+                                <div class="card-head">
+                                    <span class="badge tag-xl">특대 (249원)</span>
+                                    <i data-lucide="plus-circle" class="in-icon"></i>
+                                </div>
+                                <div class="stock-value in-text" id="in-XL">0</div>
+                                <div class="stock-label">입고</div>
+                            </div>
+                            <div class="stock-card" data-size="L">
+                                <div class="card-head">
+                                    <span class="badge tag-l">대 (197원)</span>
+                                    <i data-lucide="plus-circle" class="in-icon"></i>
+                                </div>
+                                <div class="stock-value in-text" id="in-L">0</div>
+                                <div class="stock-label">입고</div>
+                            </div>
+                            <div class="stock-card" data-size="M">
+                                <div class="card-head">
+                                    <span class="badge tag-m">중 (171원)</span>
+                                    <i data-lucide="plus-circle" class="in-icon"></i>
+                                </div>
+                                <div class="stock-value in-text" id="in-M">0</div>
+                                <div class="stock-label">입고</div>
+                            </div>
+                            <div class="stock-card" data-size="S">
+                                <div class="card-head">
+                                    <span class="badge tag-s">소 (148원)</span>
+                                    <i data-lucide="plus-circle" class="in-icon"></i>
+                                </div>
+                                <div class="stock-value in-text" id="in-S">0</div>
+                                <div class="stock-label">입고</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Outgoing -->
+                    <div class="dashboard-section" data-type="out">
+                        <div class="section-title">
+                            <h3>불출</h3>
+                        </div>
+                        <div class="stock-cards-grid">
+                            <div class="stock-card" data-size="XL">
+                                <div class="card-head">
+                                    <span class="badge tag-xl">특대 (249원)</span>
+                                    <i data-lucide="minus-circle" class="out-icon"></i>
+                                </div>
+                                <div class="stock-value out-text" id="out-XL">0</div>
+                                <div class="stock-label">불출</div>
+                            </div>
+                            <div class="stock-card" data-size="L">
+                                <div class="card-head">
+                                    <span class="badge tag-l">대 (197원)</span>
+                                    <i data-lucide="minus-circle" class="out-icon"></i>
+                                </div>
+                                <div class="stock-value out-text" id="out-L">0</div>
+                                <div class="stock-label">불출</div>
+                            </div>
+                            <div class="stock-card" data-size="M">
+                                <div class="card-head">
+                                    <span class="badge tag-m">중 (171원)</span>
+                                    <i data-lucide="minus-circle" class="out-icon"></i>
+                                </div>
+                                <div class="stock-value out-text" id="out-M">0</div>
+                                <div class="stock-label">불출</div>
+                            </div>
+                            <div class="stock-card" data-size="S">
+                                <div class="card-head">
+                                    <span class="badge tag-s">소 (148원)</span>
+                                    <i data-lucide="minus-circle" class="out-icon"></i>
+                                </div>
+                                <div class="stock-value out-text" id="out-S">0</div>
+                                <div class="stock-label">불출</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Stock -->
+                    <div class="dashboard-section" data-type="stock">
+                        <div class="section-title">
+                            <h3>재고</h3>
+                        </div>
+                        <div class="stock-cards-grid">
+                            <div class="stock-card" data-size="XL">
+                                <div class="card-head">
+                                    <span class="badge">특대 (249원)</span>
+                                    <i data-lucide="package"></i>
+                                </div>
+                                <div class="stock-value" id="stock-XL">0</div>
+                                <div class="stock-label">재고</div>
+                            </div>
+                            <div class="stock-card" data-size="L">
+                                <div class="card-head">
+                                    <span class="badge">대 (197원)</span>
+                                    <i data-lucide="package"></i>
+                                </div>
+                                <div class="stock-value" id="stock-L">0</div>
+                                <div class="stock-label">재고</div>
+                            </div>
+                            <div class="stock-card" data-size="M">
+                                <div class="card-head">
+                                    <span class="badge">중 (171원)</span>
+                                    <i data-lucide="package"></i>
+                                </div>
+                                <div class="stock-value" id="stock-M">0</div>
+                                <div class="stock-label">재고</div>
+                            </div>
+                            <div class="stock-card" data-size="S">
+                                <div class="card-head">
+                                    <span class="badge">소 (148원)</span>
+                                    <i data-lucide="box"></i>
+                                </div>
+                                <div class="stock-value" id="stock-S">0</div>
+                                <div class="stock-label">재고</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- Form Tab -->
+                <section id="in-out" class="tab-content">
+                    <div class="form-container">
+                        <div class="form-header">
+                            <div class="type-sel">
+                                <button class="type-btn active" data-type="in">입고</button>
+                                <button class="type-btn" data-type="out">불출</button>
+                            </div>
+                        </div>
+                        <form id="transaction-form">
+                            <input type="hidden" id="entry-type" value="in">
+                            
+                            <div class="form-row date-row">
+                                <div class="input-group">
+                                    <label for="entry-date">일자</label>
+                                    <input type="text" id="entry-date" required maxlength="10">
+                                </div>
+                                <div class="input-group">
+                                    <label for="entry-team">팀</label>
+                                    <input type="text" id="entry-team" disabled value="-">
+                                </div>
+                            </div>
+
+                            <div id="out-fields">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label for="entry-part">파트</label>
+                                        <select id="entry-part">
+                                            <option value="대전점" id="entry-part-placeholder">대전점</option>
+                                            <option value="남성패션">남성패션</option>
+                                            <option value="여성패션">여성패션</option>
+                                            <option value="영패션">영패션</option>
+                                            <option value="해외패션">해외패션</option>
+                                            <option value="아동스포츠">아동스포츠</option>
+                                            <option value="리빙">리빙</option>
+                                            <option value="식품">식품</option>
+                                            <option value="기타">기타</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label for="entry-brand">브랜드명</label>
+                                        <input type="text" id="entry-brand">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row three-cols">
+                                <div class="input-group">
+                                    <label for="entry-receipt-date">영수 일자</label>
+                                    <input type="text" id="entry-receipt-date" maxlength="10">
+                                </div>
+                                <div class="input-group">
+                                    <label for="entry-pos">POS 번호</label>
+                                    <input type="text" id="entry-pos" maxlength="4">
+                                </div>
+                                <div class="input-group">
+                                    <label for="entry-receipt">영수 번호</label>
+                                    <input type="text" id="entry-receipt" maxlength="4">
+                                </div>
+                            </div>
+
+                            <div class="form-row quantities-grid">
+                                <div class="stat-input">
+                                    <label>특대</label>
+                                    <input type="text" id="q-XL" value="0">
+                                </div>
+                                <div class="stat-input">
+                                    <label>대</label>
+                                    <input type="text" id="q-L" value="0">
+                                </div>
+                                <div class="stat-input">
+                                    <label>중</label>
+                                    <input type="text" id="q-M" value="0">
+                                </div>
+                                <div class="stat-input">
+                                    <label>소</label>
+                                    <input type="text" id="q-S" value="0">
+                                </div>
+                            </div>
+
+                            <div class="form-row full-width">
+                                <div class="input-group">
+                                    <label for="entry-memo">메모</label>
+                                    <textarea id="entry-memo" rows="3"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="submit-btn">등록하기</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- History Tab -->
+                <section id="history" class="tab-content">
+                    <div class="table-container">
+                        <div class="table-controls">
+                            <div class="filter-group">
+                                <div class="date-range-filter">
+                                    <input type="text" id="history-start-date" placeholder="시작일" maxlength="10">
+                                    <span>~</span>
+                                    <input type="text" id="history-end-date" placeholder="종료일" maxlength="10">
+                                </div>
+                                <select id="history-type-filter">
+                                    <option value="all">전체 구분</option>
+                                    <option value="in">입고</option>
+                                    <option value="out">불출</option>
+                                </select>
+                                <select id="history-team-filter">
+                                    <option value="all">전체 팀</option>
+                                    <option value="패션팀">패션팀</option>
+                                    <option value="라이프스타일팀">라이프스타일팀</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                                <select id="history-part-filter">
+                                    <option value="all">전체 파트</option>
+                                    <option value="남성패션">남성패션</option>
+                                    <option value="여성패션">여성패션</option>
+                                    <option value="영패션">영패션</option>
+                                    <option value="해외패션">해외패션</option>
+                                    <option value="아동스포츠">아동스포츠</option>
+                                    <option value="리빙">리빙</option>
+                                    <option value="식품">식품</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+                            <button class="export-btn" id="export-excel-btn">
+                                <i data-lucide="download"></i> 엑셀 다운로드
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>일자</th>
+                                        <th>구분</th>
+                                        <th>특대</th>
+                                        <th>대</th>
+                                        <th>중</th>
+                                        <th>소</th>
+                                        <th>팀</th>
+                                        <th>파트</th>
+                                        <th>브랜드명</th>
+                                        <th>영수일자</th>
+                                        <th>POS번호</th>
+                                        <th>영수번호</th>
+                                        <th class="text-right">금액</th>
+                                        <th>메모</th>
+                                        <th>수정</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="history-tbody">
+                                    <!-- Filled by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Tab -->
+                <section id="reports" class="tab-content">
+                    <div class="analysis-controls">
+                        <div class="filter-group">
+                            <div class="date-range-filter">
+                                <input type="text" id="report-start-date" placeholder="시작일" maxlength="10">
+                                <span>~</span>
+                                <input type="text" id="report-end-date" placeholder="종료일" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="report-tables-container">
+                        <!-- Table 1: Team Quantity Matrix -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="section-title">
+                                    <h3>팀별 불출 현황 (수량)</h3>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="overflow-x">
+                                    <table id="team-qty-table" class="matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th>팀별(수량)</th>
+                                                <th>특대</th>
+                                                <th>대</th>
+                                                <th>중</th>
+                                                <th>소</th>
+                                                <th>합계</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table 2: Team Cost Matrix -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="section-title">
+                                    <h3>팀별 불출 현황 (가격)</h3>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="overflow-x">
+                                    <table id="team-cost-table" class="matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th>팀별(가격)</th>
+                                                <th>특대</th>
+                                                <th>대</th>
+                                                <th>중</th>
+                                                <th>소</th>
+                                                <th>합계</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table 3: Part Quantity Matrix -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="section-title">
+                                    <h3>파트별 불출 현황 (수량)</h3>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="overflow-x max-h-500">
+                                    <table id="part-qty-table" class="matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th>파트별(수량)</th>
+                                                <th>특대</th>
+                                                <th>대</th>
+                                                <th>중</th>
+                                                <th>소</th>
+                                                <th>합계</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Table 4: Part Cost Matrix -->
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="section-title">
+                                    <h3>파트별 불출 현황 (가격)</h3>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <div class="overflow-x max-h-500">
+                                    <table id="part-cost-table" class="matrix-table">
+                                        <thead>
+                                            <tr>
+                                                <th>파트별(가격)</th>
+                                                <th>특대</th>
+                                                <th>대</th>
+                                                <th>중</th>
+                                                <th>소</th>
+                                                <th>합계</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Right Sidebar for Auxiliary Tools -->
+        <aside class="right-sidebar">
+            <div class="rs-header">
+                <i data-lucide="edit-3"></i>
+                <span>메모장</span>
+            </div>
+            
+            <div class="rs-notepad-wrap">
+                <textarea id="global-notepad"></textarea>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notifications"></div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>내역 수정</h3>
+                <button class="close-modal" onclick="closeEditModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-form">
+                    <input type="hidden" id="edit-id">
+                    
+                    <div class="form-row">
+                        <div class="input-group">
+                            <label>일자</label>
+                            <input type="text" id="edit-date" maxlength="10">
+                        </div>
+                        <div class="input-group">
+                            <label>팀</label>
+                            <input type="text" id="edit-team" disabled>
+                        </div>
+                    </div>
+
+                    <div id="edit-out-fields-container">
+                        <div class="form-row">
+                            <div class="input-group">
+                                <label>파트</label>
+                                <select id="edit-part">
+                                    <option value="대전점">대전점</option>
+                                    <option value="남성패션">남성패션</option>
+                                    <option value="여성패션">여성패션</option>
+                                    <option value="영패션">영패션</option>
+                                    <option value="해외패션">해외패션</option>
+                                    <option value="아동스포츠">아동스포츠</option>
+                                    <option value="리빙">리빙</option>
+                                    <option value="식품">식품</option>
+                                    <option value="기타">기타</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>브랜드</label>
+                                <input type="text" id="edit-brand">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row three-cols" id="edit-receipt-row">
+                        <div class="input-group">
+                            <label>영수 일자</label>
+                            <input type="text" id="edit-receipt-date" maxlength="10">
+                        </div>
+                        <div class="input-group">
+                            <label>POS 번호</label>
+                            <input type="text" id="edit-pos" maxlength="4">
+                        </div>
+                        <div class="input-group">
+                            <label>영수 번호</label>
+                            <input type="text" id="edit-receipt" maxlength="4">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row quantities-grid">
+                        <div class="stat-input">
+                            <label>특대</label>
+                            <input type="text" id="edit-q-XL" value="0">
+                        </div>
+                        <div class="stat-input">
+                            <label>대</label>
+                            <input type="text" id="edit-q-L" value="0">
+                        </div>
+                        <div class="stat-input">
+                            <label>중</label>
+                            <input type="text" id="edit-q-M" value="0">
+                        </div>
+                        <div class="stat-input">
+                            <label>소</label>
+                            <input type="text" id="edit-q-S" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-row full-width">
+                        <div class="input-group">
+                            <label>메모</label>
+                            <textarea id="edit-memo" rows="3"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="delete-btn-alt" onclick="deleteFromModal()">
+                    <i data-lucide="trash-2"></i> 삭제
+                </button>
+                <div class="footer-main-btns">
+                    <button class="cancel-btn" onclick="closeEditModal()">취소</button>
+                    <button class="save-btn" onclick="saveEdit()">변경사항 저장</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <!-- Firebase SDK (Global Bundle for simplification) -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script src="app.js"></script>
+</body>
+</html>
