@@ -127,10 +127,10 @@ function setupEventListeners() {
         input.addEventListener('focus', function() { if (this.value === '0') this.value = ''; });
     });
 
-    // Real-time listener for Physical Stock inputs
+    // Real-time listener for Physical Stock inputs (Fixed Input Lock & Cursor Jump)
     document.querySelectorAll('.real-input').forEach(input => {
         input.addEventListener('input', function() {
-            // Remove everything except numbers
+            // Keep it raw during typing to prevent cursor issues
             let val = this.value.replace(/[^0-9]/g, '');
             
             // Temporary local state update
@@ -138,17 +138,22 @@ function setupEventListeners() {
             const numVal = parseInt(val, 10) || 0;
             state.realStock[sz] = numVal;
             
-            // Instantly push to Firebase
+            // Instantly push to Firebase for Persistence
             if (db) {
                 db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
             }
-            
-            // Format for display
-            this.value = numVal.toLocaleString();
         });
 
         input.addEventListener('blur', function() {
-            if (this.value === '') this.value = '0';
+            // Format only when leaving the input
+            const numVal = parseInt(this.value.replace(/[^0-9]/g, ''), 10) || 0;
+            this.value = numVal.toLocaleString();
+        });
+
+        input.addEventListener('focus', function() {
+            // Remove comma for easier editing when focused
+            let val = this.value.replace(/[^0-9]/g, '');
+            this.value = val === '0' ? '' : val;
         });
     });
 
