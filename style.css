@@ -1231,8 +1231,8 @@ input:disabled, select:disabled, textarea:disabled {
 
 /* Dashboard Color Coding */
 .stock-value {
-    position: absolute; /* ABSOLUTE CENTERING */
-    top: 55%; 
+    position: absolute; /* ABSOLUTE DEAD-CENTER */
+    top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
@@ -1244,7 +1244,7 @@ input:disabled, select:disabled, textarea:disabled {
     letter-spacing: -0.02em;
     height: 32px;
     line-height: 32px;
-    pointer-events: none; /* Let clicks pass through if needed */
+    pointer-events: none; 
 }
 
 .in-text { color: #000000; }
@@ -1466,8 +1466,8 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 .real-input {
-    position: absolute; /* ABSOLUTE CENTERING */
-    top: 55%;
+    position: absolute; /* ABSOLUTE DEAD-CENTER */
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     display: block;
