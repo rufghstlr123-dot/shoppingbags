@@ -138,6 +138,13 @@ function setupEventListeners() {
             const sz = this.id.split('-')[1];
             const numVal = parseInt(val, 10) || 0;
             
+            // Instant local feedback (Comparison with system stock)
+            const stockVal = parseInt(document.getElementById(`stock-${sz}`).textContent.replace(/,/g, ''), 10) || 0;
+            const mismatchIcon = document.getElementById(`mismatch-${sz}`);
+            if (mismatchIcon) {
+                mismatchIcon.style.display = stockVal !== numVal ? 'block' : 'none';
+            }
+
             // Sync without update loop
             state.realStock[sz] = numVal;
             if (db) db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
@@ -303,12 +310,18 @@ function renderDashboard() {
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
         
         const realEl = document.getElementById(`real-${sz}`);
+        const mismatchIcon = document.getElementById(`mismatch-${sz}`);
         
         if (realEl) {
             // CRITICAL: Only update value if the user is NOT currently typing in THIS field
             if (document.activeElement !== realEl) {
                 realEl.value = real.toLocaleString();
             }
+        }
+
+        // Show/Hide mismatch icon (Comparison alert)
+        if (mismatchIcon) {
+            mismatchIcon.style.display = stock !== real ? 'block' : 'none';
         }
     });
     lucide.createIcons();
