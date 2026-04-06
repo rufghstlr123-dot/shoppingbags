@@ -1231,15 +1231,20 @@ input:disabled, select:disabled, textarea:disabled {
 
 /* Dashboard Color Coding */
 .stock-value {
+    position: absolute; /* ABSOLUTE CENTERING */
+    top: 55%; 
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
     font-size: 1.85rem;
     font-weight: 950;
     color: #000000;
     text-align: center;
-    margin: 0 !important; /* Force zero margin */
-    margin-top: 2px; /* Slight nudge up */
+    margin: 0 !important;
     letter-spacing: -0.02em;
     height: 32px;
     line-height: 32px;
+    pointer-events: none; /* Let clicks pass through if needed */
 }
 
 .in-text { color: #000000; }
@@ -1448,37 +1453,23 @@ input:disabled, select:disabled, textarea:disabled {
 .stock-card {
     background: white;
     border-radius: 10px;
-    padding: 0; /* Clear padding for accurate centering */
+    padding: 10px 14px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    align-items: center; /* Horizontally center */
-    justify-content: center; /* Vertically center */
-    position: relative;
+    position: relative; /* CRITICAL FOR ABSOLUTE CHILDREN */
     height: 85px; /* Fixed height for absolute parity */
     transition: all 0.25s ease;
     cursor: default;
     overflow: hidden;
 }
 
-/* Position Badge and Icon to corners to free the center */
-.stock-card .badge {
-    position: absolute;
-    top: 6px;
-    left: 8px;
-    transform: scale(0.85); /* Slightly smaller for elegance */
-    transform-origin: top left;
-}
-
-.stock-card i {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    opacity: 0.8;
-}
-
 .real-input {
+    position: absolute; /* ABSOLUTE CENTERING */
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: block;
     width: 100%;
     border: none !important;
@@ -1494,9 +1485,8 @@ input:disabled, select:disabled, textarea:disabled {
     height: 32px !important;
     line-height: 32px !important;
     box-shadow: none !important;
-    position: relative;
-    z-index: 50;
-    pointer-events: auto !important;
+    z-index: 50; 
+    pointer-events: auto !important; 
 }
 
 .stock-card:hover {
