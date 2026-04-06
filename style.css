@@ -1043,10 +1043,10 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 .glow-btn:hover {
-    background: #fcd34d; /* Golden highlight on hover */
+    background: #ffffff; 
     color: #064e3b;
     transform: translateY(-8px) scale(1.08);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(252, 211, 77, 0.6);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 80px rgba(255, 255, 255, 0.4);
     animation: none; /* Pause pulse on hover */
 }
 
