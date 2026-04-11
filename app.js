@@ -187,26 +187,30 @@ function setupEventListeners() {
     // Price Input Listeners
     ['XL', 'L', 'M', 'S'].forEach(sz => {
         const el = document.getElementById(`price-${sz}`);
-        let oldVal = 0;
         if (el) {
-            el.addEventListener('focus', function() {
-                oldVal = state.prices[sz];
-            });
             el.addEventListener('input', function() {
                 let val = this.value.replace(/[^0-9]/g, '');
                 const numVal = parseInt(val, 10) || 0;
-                state.prices[sz] = numVal;
-                if (db) db.ref(`sb_inventory/prices/${sz}`).set(numVal);
                 this.value = numVal.toLocaleString();
             });
             el.addEventListener('blur', function() {
-                if (this.value === '') {
-                    this.value = '0';
-                    state.prices[sz] = 0;
-                    if (db) db.ref(`sb_inventory/prices/${sz}`).set(0);
-                }
-                const newVal = state.prices[sz];
-                if (oldVal !== newVal) {
+                if (this.value === '') this.value = '0';
+            });
+        }
+    });
+
+    // Apply Price Changes
+    const applyPriceBtn = document.getElementById('apply-price-btn');
+    if (applyPriceBtn) {
+        applyPriceBtn.addEventListener('click', () => {
+            let changed = false;
+            ['XL', 'L', 'M', 'S'].forEach(sz => {
+                const el = document.getElementById(`price-${sz}`);
+                const newVal = parseInt(el.value.replace(/,/g, ''), 10) || 0;
+                const oldVal = state.prices[sz];
+
+                if (newVal !== oldVal) {
+                    // Record History
                     const log = {
                         timestamp: new Date().toLocaleString('ko-KR'),
                         size: sz,
@@ -214,12 +218,23 @@ function setupEventListeners() {
                         to: newVal
                     };
                     state.priceHistory.unshift(log);
-                    if (state.priceHistory.length > 50) state.priceHistory.pop(); // Limit to 50 logs
-                    if (db) db.ref('sb_inventory/priceHistory').set(state.priceHistory);
+                    state.prices[sz] = newVal;
+                    changed = true;
                 }
             });
-        }
-    });
+
+            if (changed) {
+                if (state.priceHistory.length > 50) state.priceHistory.pop();
+                if (db) {
+                    db.ref('sb_inventory/prices').set(state.prices);
+                    db.ref('sb_inventory/priceHistory').set(state.priceHistory);
+                }
+                showToast('단가가 성공적으로 변경되었습니다.', 'success');
+            } else {
+                showToast('변경사항이 없습니다.', 'info');
+            }
+        });
+    }
 
     // Price History Modal
     const priceHistModal = document.getElementById('price-history-modal');

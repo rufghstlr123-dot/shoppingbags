@@ -1671,6 +1671,33 @@ input:disabled, select:disabled, textarea:disabled {
     gap: 6px;
 }
 
+.apply-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 8px;
+}
+
+.apply-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 76, 69, 0.15);
+}
+
+.apply-btn i {
+    width: 14px;
+    height: 14px;
+}
+
 /* History Modal Specifics */
 .history-modal {
     max-width: 500px !important;
