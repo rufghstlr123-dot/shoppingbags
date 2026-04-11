@@ -14,16 +14,26 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Pre-Entrance Landing Flow (Premium Restored) -->
-    <div id="landing-page">
-        <div class="landing-inner">
-            <div class="landing-text">
-                <h1 class="brand-title">현대프리미엄아울렛 대전점<br>쇼핑백 재고 관리 시스템</h1>
-            </div>
-            <div class="landing-action">
-                <button id="enter-btn" class="glow-btn">
-                    <span>접속하기</span>
-                </button>
+    <div id="login-page">
+        <div class="login-container">
+            <div class="login-box">
+                <div class="login-header">
+                    <i data-lucide="shopping-bag" class="login-logo"></i>
+                    <h1>쇼핑백 재고 관리 시스템</h1>
+                    <p>현대프리미엄아울렛 대전점</p>
+                </div>
+                <form id="login-form" class="login-form">
+                    <div class="login-input-group">
+                        <label for="username">아이디</label>
+                        <input type="text" id="username" placeholder="아이디를 입력하세요" required>
+                    </div>
+                    <div class="login-input-group">
+                        <label for="password">비밀번호</label>
+                        <input type="password" id="password" placeholder="비밀번호를 입력하세요" required>
+                    </div>
+                    <button type="submit" class="login-btn">접속하기</button>
+                    <p id="login-error" class="login-error-msg" style="display: none;">아이디 또는 비밀번호가 올바르지 않습니다.</p>
+                </form>
             </div>
         </div>
     </div>
@@ -60,6 +70,10 @@
                 <div class="page-title">
                     <h1 id="tab-title">대시보드</h1>
                     <p id="tab-subtitle"></p>
+                </div>
+                <div class="user-info">
+                    <span id="display-user"><i data-lucide="user"></i> 사용자</span>
+                    <button id="logout-btn" class="logout-btn"><i data-lucide="log-out"></i> 로그아웃</button>
                 </div>
             </header>
 

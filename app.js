@@ -27,7 +27,13 @@ let state = {
     realStock: { XL: 0, L: 0, M: 0, S: 0 },
     realStockLastUpdated: '',
     prices: { XL: 249, L: 197, M: 171, S: 148 },
-    priceHistory: []
+    priceHistory: [],
+    currentUser: null
+};
+
+const USERS = {
+    "재경": "재경12",
+    "지원": "지원34"
 };
 
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
@@ -91,6 +97,36 @@ function initApp() {
     const reportEnd = document.getElementById('report-end-date');
     if (reportStart) reportStart.value = formatDate(firstDay);
     if (reportEnd) reportEnd.value = formatDate(lastDay);
+
+    // Session Check
+    const savedUser = sessionStorage.getItem('sb_user');
+    if (savedUser) {
+        showApp(savedUser);
+    }
+}
+
+function showApp(username) {
+    state.currentUser = username;
+    const loginPage = document.getElementById('login-page');
+    const app = document.querySelector('.app-container');
+    const displayUser = document.getElementById('display-user');
+    
+    if (displayUser) displayUser.innerHTML = `<i data-lucide="user"></i> ${username}님`;
+    
+    loginPage.style.opacity = '0';
+    loginPage.style.pointerEvents = 'none';
+    setTimeout(() => {
+        loginPage.style.display = 'none';
+        app.style.display = 'flex';
+        renderDashboard(); 
+        renderHistory();
+        lucide.createIcons();
+    }, 600);
+}
+
+function handleLogout() {
+    sessionStorage.removeItem('sb_user');
+    location.reload();
 }
 
 function setupEventListeners() {
@@ -250,19 +286,29 @@ function setupEventListeners() {
         document.getElementById('edit-team').value = getTeamFromPart(document.getElementById('edit-part').value);
     });
 
-    const enterBtn = document.getElementById('enter-btn');
-    if (enterBtn) {
-        enterBtn.addEventListener('click', () => {
-            const landing = document.getElementById('landing-page');
-            const app = document.querySelector('.app-container');
-            landing.style.opacity = '0';
-            landing.style.pointerEvents = 'none';
-            setTimeout(() => {
-                landing.style.display = 'none';
-                app.style.display = 'flex';
-                setTimeout(() => { renderDashboard(); renderHistory(); }, 50);
-            }, 600);
+    // Login Form Handler
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('username').value;
+            const pw = document.getElementById('password').value;
+            const errorMsg = document.getElementById('login-error');
+
+            if (USERS[id] && USERS[id] === pw) {
+                sessionStorage.setItem('sb_user', id);
+                showApp(id);
+            } else {
+                errorMsg.style.display = 'block';
+                setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
+            }
         });
+    }
+
+    // Logout Handler
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
     }
 
     const notepad = document.getElementById('global-notepad');
