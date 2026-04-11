@@ -1457,7 +1457,8 @@ input:disabled, select:disabled, textarea:disabled {
     overflow: hidden;
 }
 
-/* real-input override removed since defined in unified group */
+/* real-input override for visibility and alignment */
+input.real-input {
     text-align: center;
     padding: 0 !important;
     margin: 0 !important;
@@ -1472,12 +1473,13 @@ input:disabled, select:disabled, textarea:disabled {
 
 .mismatch-icon {
     position: absolute;
-    top: 50%;
-    right: 32px; /* Position to the right side of the card, next to the long number */
+    top: 38%; /* Align with the numbers */
+    right: 20px; /* Position to the right side of the card */
     transform: translateY(-50%);
     color: #ef4444; /* Vivid Red */
     width: 22px;
     height: 22px;
+    z-index: 100; /* Must be above .real-input(50) */
     pointer-events: none;
     animation: flashMismatch 0.8s infinite alternate;
     filter: drop-shadow(0 0 5px rgba(239, 68, 68, 0.3));
