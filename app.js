@@ -28,14 +28,12 @@ let state = {
     realStockLastUpdated: '',
     prices: { XL: 249, L: 197, M: 171, S: 148 },
     priceHistory: [],
-    currentUser: null
+    currentUser: null,
+    currentUserId: null,
+    users: {}
 };
 
-const USERS = {
-    "1735073": "이효현 전임",
-    "2327696": "이지연 사원",
-    "2522160": "신우재 사원"
-};
+const ADMIN_ID = "2119721";
 
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
 
@@ -58,8 +56,28 @@ function initApp() {
                 state.realStockLastUpdated = data.realStockLastUpdated || '';
                 state.prices = data.prices || { XL: 249, L: 197, M: 171, S: 148 };
                 state.priceHistory = data.priceHistory || [];
+                state.users = data.users || {
+                    "2119721": "김원회 전임",
+                    "1735073": "이효현 전임",
+                    "2327696": "이지연 사원",
+                    "2522160": "신우재 사원"
+                };
+
+                // Admin Seeding if not in DB
+                if (!data.users && db) {
+                    db.ref('sb_inventory/users').set(state.users);
+                }
+
+                renderDashboard();
+                renderHistory();
+                renderUserList();
                 
-                // Real-time Global Sync for Notepad & Dashboard
+                // If already logged in, update UI
+                if (state.currentUserId) {
+                    toggleAdminTab(state.currentUserId);
+                }
+
+                // Sync Price Inputsepad & Dashboard
                 const np = document.getElementById('global-notepad');
                 if (np && np.value !== state.notepad && document.activeElement !== np) {
                     np.value = state.notepad;
@@ -101,18 +119,36 @@ function initApp() {
 
     // Session Check
     const savedUserId = sessionStorage.getItem('sb_user_id');
-    if (savedUserId && USERS[savedUserId]) {
-        showApp(USERS[savedUserId]);
+    if (savedUserId) {
+        db.ref('sb_inventory/users').once('value', (snap) => {
+            const users = snap.val() || {};
+            if (users[savedUserId]) {
+                showApp(savedUserId, users[savedUserId]);
+            } else {
+                sessionStorage.removeItem('sb_user_id');
+            }
+        });
     }
 }
 
-function showApp(displayName) {
-    state.currentUser = displayName;
+function toggleAdminTab(userId) {
+    const navAdmin = document.getElementById('nav-admin');
+    if (navAdmin) {
+        navAdmin.style.display = (userId === ADMIN_ID) ? 'flex' : 'none';
+    }
+}
+
+function showApp(userId, username) {
+    state.currentUserId = userId;
+    state.currentUser = username;
+    
+    toggleAdminTab(userId);
+
     const loginPage = document.getElementById('login-page');
     const app = document.querySelector('.app-container');
     const displayUser = document.getElementById('display-user');
     
-    if (displayUser) displayUser.innerHTML = `<i data-lucide="user"></i> ${displayName}님`;
+    if (displayUser) displayUser.innerHTML = `<i data-lucide="user"></i> ${username}님`;
     
     loginPage.style.opacity = '0';
     loginPage.style.pointerEvents = 'none';
@@ -729,3 +765,60 @@ function showToast(msg, type = 'info') {
 }
 
 function closeEditModal() { document.getElementById('edit-modal').classList.remove('active'); }
+
+// --- Admin & Support Functions ---
+function renderUserList() {
+    const body = document.getElementById('user-list-body');
+    if (!body) return;
+    
+    body.innerHTML = Object.entries(state.users).map(([id, name]) => `
+        <tr>
+            <td style="font-weight: 600;">${id}</td>
+            <td>${name}</td>
+            <td style="text-align: right;">
+                ${id === ADMIN_ID ? '<span class="badge tag-xl">마스터</span>' : 
+                `<button class="delete-btn-sm" onclick="deleteUser('${id}')">삭제</button>`}
+            </td>
+        </tr>
+    `).join('') || '<tr><td colspan="3" style="text-align: center; color: #94a3b8; padding: 40px;">등록된 계정이 없습니다.</td></tr>';
+}
+
+function deleteUser(id) {
+    if (id === ADMIN_ID) return;
+    if (confirm(`'${state.users[id]}' 계정을 삭제하시겠습니까?`)) {
+        delete state.users[id];
+        if (db) db.ref('sb_inventory/users').set(state.users);
+        showToast('계정이 삭제되었습니다.');
+    }
+}
+
+// Global scope for onclick
+window.deleteUser = deleteUser;
+
+// Admin Event Listeners
+document.getElementById('add-user-btn')?.addEventListener('click', () => {
+    document.getElementById('user-modal').classList.add('active');
+});
+
+document.getElementById('close-user-modal')?.addEventListener('click', () => {
+    document.getElementById('user-modal').classList.remove('active');
+});
+
+document.getElementById('save-user-btn')?.addEventListener('click', () => {
+    const id = document.getElementById('new-user-id').value.trim();
+    const name = document.getElementById('new-user-name').value.trim();
+    
+    if (!id || !name) {
+        showToast('모든 정보를 입력해주세요.', 'warning');
+        return;
+    }
+    
+    state.users[id] = name;
+    if (db) db.ref('sb_inventory/users').set(state.users);
+    
+    document.getElementById('user-modal').classList.remove('active');
+    document.getElementById('new-user-id').value = '';
+    document.getElementById('new-user-name').value = '';
+    showToast('새 계정이 등록되었습니다.', 'success');
+});
+

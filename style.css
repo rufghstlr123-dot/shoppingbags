@@ -1139,6 +1139,79 @@ input:disabled, select:disabled, textarea:disabled {
     background: #fef2f2;
 }
 
+/* Admin Panel Styles */
+.admin-panel {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: 32px;
+}
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.admin-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.admin-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--primary);
+}
+
+.admin-title-wrap h2 {
+    font-size: 1.4rem;
+    color: var(--primary);
+}
+
+.admin-title-wrap p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.user-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.user-table th {
+    text-align: left;
+    padding: 16px;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border);
+    font-weight: 600;
+}
+
+.user-table td {
+    padding: 20px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+.delete-btn-sm {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.delete-btn-sm:hover {
+    background: #ef4444;
+    color: white;
+    transform: translateY(-1px);
+}
+
 /* Original Legacy Landing Classes (Safety Removal) */
 .landing-page, .landing-content, .landing-logo, .enter-btn { display: none !important; }
 
