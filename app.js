@@ -378,9 +378,11 @@ function switchTab(tabId) {
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.toggle('active', tab.id === tabId));
     state.currentView = tabId;
     updateHeader();
+    updateHeader();
     if (tabId === 'dashboard') renderDashboard();
     if (tabId === 'history') renderHistory();
     if (tabId === 'reports') renderReports();
+    if (tabId === 'admin') renderUserList();
 }
 
 function updateHeader() {
@@ -388,7 +390,8 @@ function updateHeader() {
         'dashboard': { main: '대시보드', sub: '' },
         'in-out': { main: '입고 / 불출 등록', sub: '' },
         'history': { main: '거래 내역 조회', sub: '' },
-        'reports': { main: '데이터 분석', sub: '' }
+        'reports': { main: '데이터 분석', sub: '' },
+        'admin': { main: '계정 관리', sub: '시스템 접속 계정 정보를 실시간으로 관리합니다.' }
     };
     document.getElementById('tab-title').textContent = titles[state.currentView].main;
     document.getElementById('tab-subtitle').textContent = titles[state.currentView].sub;
