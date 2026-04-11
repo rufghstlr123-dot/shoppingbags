@@ -174,6 +174,7 @@ function setupEventListeners() {
     });
 
     document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
+    document.getElementById('export-report-btn').addEventListener('click', exportReportToExcel);
     document.getElementById('entry-part').addEventListener('change', updateTeamDisplay);
     document.getElementById('edit-part').addEventListener('change', () => {
         document.getElementById('edit-team').value = getTeamFromPart(document.getElementById('edit-part').value);
@@ -414,6 +415,48 @@ function exportToExcel() {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = `쇼핑백_거래내역_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+}
+
+function exportReportToExcel() {
+    // UTF-8 BOM for Excel compatibility
+    let csvContent = "\uFEFF=== 데이터 분석 리포트 ===\n";
+    csvContent += `기간: ${document.getElementById('report-start-date').value} ~ ${document.getElementById('report-end-date').value}\n\n`;
+
+    const tables = [
+        { id: 'team-qty-table', title: '팀별 불출 현황 (수량)' },
+        { id: 'team-cost-table', title: '팀별 불출 현황 (가격)' },
+        { id: 'part-qty-table', title: '파트별 불출 현황 (수량)' },
+        { id: 'part-cost-table', title: '파트별 불출 현황 (가격)' }
+    ];
+
+    tables.forEach(tableInfo => {
+        const table = document.getElementById(tableInfo.id);
+        if (!table) return;
+
+        csvContent += `[${tableInfo.title}]\n`;
+        
+        // Headers
+        const headers = Array.from(table.querySelectorAll('thead th')).map(th => th.textContent);
+        csvContent += headers.join(',') + '\n';
+
+        // Body
+        const rows = Array.from(table.querySelectorAll('tbody tr'));
+        rows.forEach(tr => {
+            const cells = Array.from(tr.querySelectorAll('td')).map(td => {
+                let val = td.textContent.replace(/,/g, ''); // Remove commas from numbers
+                if (val.includes('₩')) val = val.replace('₩', '').trim();
+                return val;
+            });
+            csvContent += cells.join(',') + '\n';
+        });
+        csvContent += '\n'; // Add space between tables
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `쇼핑백_분석리포트_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
 }
 
