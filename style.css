@@ -1738,4 +1738,20 @@ input:disabled, select:disabled, textarea:disabled {
     border-bottom: none;
 }
 
+.delete-history-btn {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.delete-history-btn:hover {
+    color: #ef4444;
+    background: #fef2f2;
+}
+
 

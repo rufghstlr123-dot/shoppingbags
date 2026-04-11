@@ -203,38 +203,33 @@ function setupEventListeners() {
     const applyPriceBtn = document.getElementById('apply-price-btn');
     if (applyPriceBtn) {
         applyPriceBtn.addEventListener('click', () => {
-            let changed = false;
+            const now = new Date().toLocaleString('ko-KR');
             ['XL', 'L', 'M', 'S'].forEach(sz => {
                 const el = document.getElementById(`price-${sz}`);
                 const newVal = parseInt(el.value.replace(/,/g, ''), 10) || 0;
                 const oldVal = state.prices[sz];
 
-                if (newVal !== oldVal) {
-                    // Record History
-                    const log = {
-                        timestamp: new Date().toLocaleString('ko-KR'),
-                        size: sz,
-                        from: oldVal,
-                        to: newVal
-                    };
-                    state.priceHistory.unshift(log);
-                    state.prices[sz] = newVal;
-                    changed = true;
-                }
+                // Record History for every item regardless of change
+                const log = {
+                    id: Date.now() + Math.random(),
+                    timestamp: now,
+                    size: sz,
+                    from: oldVal,
+                    to: newVal
+                };
+                state.priceHistory.unshift(log);
+                state.prices[sz] = newVal;
             });
 
-            if (changed) {
-                if (state.priceHistory.length > 50) state.priceHistory.pop();
-                if (db) {
-                    db.ref('sb_inventory').update({
-                        prices: state.prices,
-                        priceHistory: state.priceHistory
-                    });
-                }
-                showToast('단가가 성공적으로 변경되었습니다.', 'success');
-            } else {
-                showToast('변경사항이 없습니다.', 'info');
+            if (state.priceHistory.length > 100) state.priceHistory = state.priceHistory.slice(0, 100);
+            
+            if (db) {
+                db.ref('sb_inventory').update({
+                    prices: state.prices,
+                    priceHistory: state.priceHistory
+                });
             }
+            showToast('단가가 적용되고 이력에 기록되었습니다.', 'success');
         });
     }
 
@@ -544,10 +539,21 @@ function renderPriceHistory() {
         <tr>
             <td>${log.timestamp}</td>
             <td><span class="badge tag-${log.size.toLowerCase()}">${log.size === 'XL'?'특대':log.size==='L'?'대':log.size==='M'?'중':'소'}</span></td>
-            <td style="color: #94a3b8">${log.from.toLocaleString()}원</td>
-            <td style="font-weight: 700">${log.to.toLocaleString()}원</td>
+            <td style="color: #94a3b8">${(log.from||0).toLocaleString()}원</td>
+            <td style="font-weight: 700">${(log.to||0).toLocaleString()}원</td>
+            <td style="text-align: right;">
+                <button class="delete-history-btn" onclick="deletePriceHistory(${log.id})">&times;</button>
+            </td>
         </tr>
-    `).join('') || '<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px;">변경 이력이 없습니다.</td></tr>';
+    `).join('') || '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 40px;">변경 이력이 없습니다.</td></tr>';
+}
+
+function deletePriceHistory(id) {
+    if (!confirm('이 기록을 삭제하시겠습니까?')) return;
+    state.priceHistory = state.priceHistory.filter(log => log.id !== id);
+    if (db) db.ref('sb_inventory/priceHistory').set(state.priceHistory);
+    renderPriceHistory();
+    showToast('기록이 삭제되었습니다.', 'info');
 }
 
 function openEditModal(id) {
