@@ -1231,44 +1231,34 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 /* Dashboard Color Coding */
-.stock-value {
-    position: absolute; /* ABSOLUTE DEAD-CENTER */
+.stock-value, .real-input {
+    position: absolute;
     top: 50%; 
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    font-size: 1.85rem;
-    font-weight: 950;
+    font-size: 2.2rem;
+    font-weight: 800;
     color: #000000;
     text-align: center;
     margin: 0 !important;
+    padding: 0 !important;
     letter-spacing: -0.02em;
-    height: 32px;
-    line-height: 32px;
-    pointer-events: none; 
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    pointer-events: auto; /* Ensure real-input is clickable */
+    line-height: normal;
+}
+
+.stock-value {
+    pointer-events: none; /* stock-value is text only */
 }
 
 .in-text { color: #000000; }
 .out-text { color: #000000; }
 .real-text { color: #000000; }
 
-.real-input {
-    display: block;
-    width: 100%;
-    border: none !important;
-    background: transparent !important;
-    font-size: 1.85rem;
-    font-weight: 950;
-    color: #000000;
-    text-align: center;
-    padding: 0 !important;
-    margin: 0 !important; /* Force zero margin */
-    outline: none !important;
-    font-family: inherit;
-    height: 32px !important;
-    line-height: 32px !important;
-    box-shadow: none !important;
-}
 .warning-icon {
     position: absolute;
     top: 8px;
@@ -1466,18 +1456,7 @@ input:disabled, select:disabled, textarea:disabled {
     overflow: hidden;
 }
 
-.real-input {
-    position: absolute; /* ABSOLUTE DEAD-CENTER */
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    display: block;
-    width: 100%;
-    border: none !important;
-    background: transparent !important;
-    font-size: 1.85rem;
-    font-weight: 950;
-    color: #000000;
+/* real-input override removed since defined in unified group */
     text-align: center;
     padding: 0 !important;
     margin: 0 !important;
