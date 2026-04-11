@@ -347,6 +347,33 @@ function setupEventListeners() {
         logoutBtn.addEventListener('click', handleLogout);
     }
 
+    // Admin & Modal Listeners
+    const addUserBtn = document.getElementById('add-user-btn');
+    const userModal = document.getElementById('user-modal');
+    if (addUserBtn) {
+        addUserBtn.onclick = () => userModal?.classList.add('active');
+    }
+
+    const closeUserModal = document.getElementById('close-user-modal');
+    if (closeUserModal) {
+        closeUserModal.onclick = () => userModal?.classList.remove('active');
+    }
+
+    const saveUserBtn = document.getElementById('save-user-btn');
+    if (saveUserBtn) {
+        saveUserBtn.onclick = () => {
+            const id = document.getElementById('new-user-id').value.trim();
+            const name = document.getElementById('new-user-name').value.trim();
+            if (!id || !name) return showToast('사원번호와 성함을 입력해주세요.', 'warning');
+            state.users[id] = name;
+            if (db) db.ref('sb_inventory/users').set(state.users);
+            userModal.classList.remove('active');
+            document.getElementById('new-user-id').value = '';
+            document.getElementById('new-user-name').value = '';
+            showToast('계정이 등록되었습니다.', 'success');
+        };
+    }
+
     const notepad = document.getElementById('global-notepad');
     if (notepad && db) {
         notepad.addEventListener('input', (e) => {
@@ -391,7 +418,7 @@ function updateHeader() {
         'in-out': { main: '입고 / 불출 등록', sub: '' },
         'history': { main: '거래 내역 조회', sub: '' },
         'reports': { main: '데이터 분석', sub: '' },
-        'admin': { main: '계정 관리', sub: '시스템 접속 계정 정보를 실시간으로 관리합니다.' }
+        'admin': { main: '계정 관리', sub: '' }
     };
     document.getElementById('tab-title').textContent = titles[state.currentView].main;
     document.getElementById('tab-subtitle').textContent = titles[state.currentView].sub;
@@ -798,35 +825,5 @@ function deleteUser(id) {
 // Global scope for onclick
 window.deleteUser = deleteUser;
 
-// Admin Event Listeners
-const addUserBtn = document.getElementById('add-user-btn');
-const userModal = document.getElementById('user-modal');
-const closeUserModal = document.getElementById('close-user-modal');
-const saveUserBtn = document.getElementById('save-user-btn');
-
-addUserBtn?.addEventListener('click', () => {
-    userModal.classList.add('active');
-});
-
-closeUserModal?.addEventListener('click', () => {
-    userModal.classList.remove('active');
-});
-
-saveUserBtn?.addEventListener('click', () => {
-    const id = document.getElementById('new-user-id').value.trim();
-    const name = document.getElementById('new-user-name').value.trim();
-    
-    if (!id || !name) {
-        showToast('모든 정보를 입력해주세요.', 'warning');
-        return;
-    }
-    
-    state.users[id] = name;
-    if (db) db.ref('sb_inventory/users').set(state.users);
-    
-    userModal.classList.remove('active');
-    document.getElementById('new-user-id').value = '';
-    document.getElementById('new-user-name').value = '';
-    showToast('새 계정이 등록되었습니다.', 'success');
-});
+// --- End of Script ---
 
