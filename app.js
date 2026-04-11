@@ -24,7 +24,8 @@ let state = {
     currentView: 'dashboard',
     entryType: 'in',
     notepad: '',
-    realStock: { XL: 0, L: 0, M: 0, S: 0 }
+    realStock: { XL: 0, L: 0, M: 0, S: 0 },
+    realStockLastUpdated: ''
 };
 
 const PRICES = { XL: 249, L: 197, M: 171, S: 148 };
@@ -46,6 +47,7 @@ function initApp() {
                 state.entries = data.entries || [];
                 state.notepad = data.notepad || '';
                 state.realStock = data.realStock || { XL: 0, L: 0, M: 0, S: 0 };
+                state.realStockLastUpdated = data.realStockLastUpdated || '';
                 
                 // Real-time Global Sync for Notepad & Dashboard
                 const np = document.getElementById('global-notepad');
@@ -147,7 +149,14 @@ function setupEventListeners() {
 
             // Sync without update loop
             state.realStock[sz] = numVal;
-            if (db) db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
+            const now = new Date();
+            const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            state.realStockLastUpdated = timeStr;
+
+            if (db) {
+                db.ref(`sb_inventory/realStock/${sz}`).set(numVal);
+                db.ref(`sb_inventory/realStockLastUpdated`).set(timeStr);
+            }
             
             // Keep cursor at the end for smooth typing
             this.value = val; 
@@ -324,6 +333,13 @@ function renderDashboard() {
             mismatchIcon.style.display = stock !== real ? 'block' : 'none';
         }
     });
+
+    // Update Last Updated Time
+    const lastUpdateEl = document.getElementById('real-stock-last-updated');
+    if (lastUpdateEl) {
+        lastUpdateEl.textContent = state.realStockLastUpdated ? `마지막 업데이트: ${state.realStockLastUpdated}` : '마지막 업데이트: -';
+    }
+
     lucide.createIcons();
 }
 
