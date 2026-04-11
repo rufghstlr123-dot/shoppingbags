@@ -306,6 +306,8 @@ function handleSubmit() {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return showToast('일자를 정확히 입력해주세요.', 'warning');
     if (Object.values(quantities).reduce((a, b) => a + b, 0) === 0) return showToast('수량을 입력해주세요.', 'warning');
 
+    // [운영 원칙] 총 금액은 '등록 시점'의 단가를 기준으로 고정 저장합니다.
+    // 이후 단가가 변경되어도 이미 저장된 과거 내역의 금액은 변하지 않습니다.
     let totalAmount = 0;
     Object.keys(state.prices).forEach(size => { totalAmount += quantities[size] * state.prices[size]; });
 
@@ -582,6 +584,8 @@ function renderReports() {
         const p = PARTS.includes(e.part) ? e.part : '기타';
         ['XL', 'L', 'M', 'S'].forEach(sz => {
             const q = e.quantities[sz] || 0;
+            // [운영 원칙] 리포트 통계는 '현재 설정된 단가'를 기준으로 전체 수량을 재계산하여 보여줍니다.
+            // 이는 과거 물동량을 현재의 가치(단가)로 통합 분석하기 위함입니다.
             const c = q * state.prices[sz];
             matrix[t][sz] += q; matrix[t].totalQty += q; matrix[t].totalCost += c;
             pMatrix[p][sz] += q; pMatrix[p].totalQty += q; pMatrix[p].totalCost += c;
