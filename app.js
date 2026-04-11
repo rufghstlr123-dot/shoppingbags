@@ -373,25 +373,62 @@ function renderHistory() {
 }
 
 function exportToExcel() {
-    let csvContent = "\uFEFF일자,구분,특대,대,중,소,팀,파트,브랜드,금액,메모\n";
+    // UTF-8 BOM for Excel compatibility
+    let csvContent = "\uFEFF일자,구분,특대,대,중,소,팀,파트,브랜드,영수일자,POS번호,영수번호,금액,메모\n";
     state.entries.forEach(e => {
-        csvContent += `${e.date},${e.type === 'in' ? '입고' : '불출'},${e.quantities.XL},${e.quantities.L},${e.quantities.M},${e.quantities.S},${e.team},${e.part},${e.brand},${e.totalAmount},${e.memo}\n`;
+        const row = [
+            e.date,
+            e.type === 'in' ? '입고' : '불출',
+            e.quantities.XL,
+            e.quantities.L,
+            e.quantities.M,
+            e.quantities.S,
+            e.team || '-',
+            e.part || '-',
+            `"${(e.brand || '-').replace(/"/g, '""')}"`,
+            e.receiptDate || '-',
+            e.pos || '-',
+            e.receipt || '-',
+            e.totalAmount,
+            `"${(e.memo || '-').replace(/"/g, '""')}"`
+        ];
+        csvContent += row.join(',') + '\n';
     });
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob); link.download = '거래내역.csv'; link.click();
+    link.href = URL.createObjectURL(blob);
+    link.download = `쇼핑백_거래내역_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
 }
 
 function openEditModal(id) {
     const e = state.entries.find(entry => entry.id === id);
     if (!e) return;
+    
     document.getElementById('edit-id').value = e.id;
     document.getElementById('edit-date').value = e.date;
     document.getElementById('edit-part').value = e.part;
     document.getElementById('edit-team').value = e.team || '';
     document.getElementById('edit-brand').value = e.brand;
-    document.getElementById('edit-memo').value = e.memo || '';
-    ['XL', 'L', 'M', 'S'].forEach(sz => document.getElementById(`edit-q-${sz}`).value = e.quantities[sz].toLocaleString());
+    document.getElementById('edit-receipt-date').value = e.receiptDate === '-' ? '' : e.receiptDate;
+    document.getElementById('edit-pos').value = e.pos === '-' ? '' : e.pos;
+    document.getElementById('edit-receipt').value = e.receipt === '-' ? '' : e.receipt;
+    document.getElementById('edit-memo').value = e.memo === '-' ? '' : e.memo;
+    
+    ['XL', 'L', 'M', 'S'].forEach(sz => {
+        document.getElementById(`edit-q-${sz}`).value = (e.quantities[sz] || 0).toLocaleString();
+    });
+
+    // Handle visibility of out-specific fields
+    const isOut = e.type === 'out';
+    document.getElementById('edit-out-fields-container').style.opacity = isOut ? '1' : '0.3';
+    document.getElementById('edit-receipt-row').style.opacity = isOut ? '1' : '0.3';
+    document.getElementById('edit-part').disabled = !isOut;
+    document.getElementById('edit-brand').disabled = !isOut;
+    document.getElementById('edit-receipt-date').disabled = !isOut;
+    document.getElementById('edit-pos').disabled = !isOut;
+    document.getElementById('edit-receipt').disabled = !isOut;
+
     document.getElementById('edit-modal').classList.add('active');
 }
 
@@ -399,15 +436,39 @@ function saveEdit() {
     const id = parseInt(document.getElementById('edit-id').value);
     const idx = state.entries.findIndex(e => e.id === id);
     if (idx === -1) return;
+
+    const entry = state.entries[idx];
+    const isOut = entry.type === 'out';
+    
     const quantities = {
         XL: parseInt(document.getElementById('edit-q-XL').value.replace(/,/g, '')) || 0,
         L: parseInt(document.getElementById('edit-q-L').value.replace(/,/g, '')) || 0,
         M: parseInt(document.getElementById('edit-q-M').value.replace(/,/g, '')) || 0,
         S: parseInt(document.getElementById('edit-q-S').value.replace(/,/g, '')) || 0
     };
-    let totalAmt = 0; Object.keys(PRICES).forEach(sz => totalAmt += quantities[sz] * PRICES[sz]);
-    state.entries[idx] = { ...state.entries[idx], date: document.getElementById('edit-date').value, quantities, totalAmount: totalAmt };
-    syncToFirebase(); closeEditModal(); showToast('수정되었습니다.', 'success');
+    
+    let totalAmt = 0; 
+    Object.keys(PRICES).forEach(sz => totalAmt += quantities[sz] * PRICES[sz]);
+
+    const updatedPart = document.getElementById('edit-part').value;
+    
+    state.entries[idx] = { 
+        ...entry, 
+        date: document.getElementById('edit-date').value,
+        part: updatedPart,
+        team: isOut ? getTeamFromPart(updatedPart) : '-',
+        brand: isOut ? (document.getElementById('edit-brand').value.trim() || '-') : '-',
+        receiptDate: isOut ? (document.getElementById('edit-receipt-date').value || '-') : '-',
+        pos: isOut ? (document.getElementById('edit-pos').value.trim() || '-') : '-',
+        receipt: isOut ? (document.getElementById('edit-receipt').value.trim() || '-') : '-',
+        memo: document.getElementById('edit-memo').value.trim() || '-',
+        quantities, 
+        totalAmount: totalAmt 
+    };
+    
+    syncToFirebase(); 
+    closeEditModal(); 
+    showToast('수정이 완료되었습니다.', 'success');
 }
 
 function deleteFromModal() {
