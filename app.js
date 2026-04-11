@@ -25,10 +25,10 @@ let state = {
     entryType: 'in',
     notepad: '',
     realStock: { XL: 0, L: 0, M: 0, S: 0 },
-    realStockLastUpdated: ''
+    realStockLastUpdated: '',
+    prices: { XL: 249, L: 197, M: 171, S: 148 }
 };
 
-const PRICES = { XL: 249, L: 197, M: 171, S: 148 };
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
 
 // Initial setup
@@ -48,12 +48,21 @@ function initApp() {
                 state.notepad = data.notepad || '';
                 state.realStock = data.realStock || { XL: 0, L: 0, M: 0, S: 0 };
                 state.realStockLastUpdated = data.realStockLastUpdated || '';
+                state.prices = data.prices || { XL: 249, L: 197, M: 171, S: 148 };
                 
                 // Real-time Global Sync for Notepad & Dashboard
                 const np = document.getElementById('global-notepad');
                 if (np && np.value !== state.notepad && document.activeElement !== np) {
                     np.value = state.notepad;
                 }
+
+                // Sync Price Inputs
+                ['XL', 'L', 'M', 'S'].forEach(sz => {
+                    const el = document.getElementById(`price-${sz}`);
+                    if (el && document.activeElement !== el) {
+                        el.value = state.prices[sz].toLocaleString();
+                    }
+                });
                 
                 // Instantly refresh all views for all users without refresh
                 renderDashboard();
@@ -173,6 +182,27 @@ function setupEventListeners() {
         });
     });
 
+    // Price Input Listeners
+    ['XL', 'L', 'M', 'S'].forEach(sz => {
+        const el = document.getElementById(`price-${sz}`);
+        if (el) {
+            el.addEventListener('input', function() {
+                let val = this.value.replace(/[^0-9]/g, '');
+                const numVal = parseInt(val, 10) || 0;
+                state.prices[sz] = numVal;
+                if (db) db.ref(`sb_inventory/prices/${sz}`).set(numVal);
+                this.value = numVal.toLocaleString();
+            });
+            el.addEventListener('blur', function() {
+                if (this.value === '') {
+                    this.value = '0';
+                    state.prices[sz] = 0;
+                    if (db) db.ref(`sb_inventory/prices/${sz}`).set(0);
+                }
+            });
+        }
+    });
+
     document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
     document.getElementById('export-report-btn').addEventListener('click', exportReportToExcel);
     document.getElementById('entry-part').addEventListener('change', updateTeamDisplay);
@@ -277,7 +307,7 @@ function handleSubmit() {
     if (Object.values(quantities).reduce((a, b) => a + b, 0) === 0) return showToast('수량을 입력해주세요.', 'warning');
 
     let totalAmount = 0;
-    Object.keys(PRICES).forEach(size => { totalAmount += quantities[size] * PRICES[size]; });
+    Object.keys(state.prices).forEach(size => { totalAmount += quantities[size] * state.prices[size]; });
 
     const entry = {
         id: Date.now(), type, date,
@@ -507,7 +537,7 @@ function saveEdit() {
     };
     
     let totalAmt = 0; 
-    Object.keys(PRICES).forEach(sz => totalAmt += quantities[sz] * PRICES[sz]);
+    Object.keys(state.prices).forEach(sz => totalAmt += quantities[sz] * state.prices[sz]);
 
     const updatedPart = document.getElementById('edit-part').value;
     
@@ -552,7 +582,7 @@ function renderReports() {
         const p = PARTS.includes(e.part) ? e.part : '기타';
         ['XL', 'L', 'M', 'S'].forEach(sz => {
             const q = e.quantities[sz] || 0;
-            const c = q * PRICES[sz];
+            const c = q * state.prices[sz];
             matrix[t][sz] += q; matrix[t].totalQty += q; matrix[t].totalCost += c;
             pMatrix[p][sz] += q; pMatrix[p].totalQty += q; pMatrix[p].totalCost += c;
             colTotals[sz] += q; colTotals.qty += q; colTotals.cost += c;
@@ -564,9 +594,9 @@ function renderReports() {
         const body = document.querySelector(`#${id} tbody`); if (!body) return;
         body.innerHTML = items.map(item => {
             const d = data[item];
-            const vals = ['XL', 'L', 'M', 'S'].map(sz => fNum(mode === 'qty' ? d[sz] : d[sz] * PRICES[sz]));
+            const vals = ['XL', 'L', 'M', 'S'].map(sz => fNum(mode === 'qty' ? d[sz] : d[sz] * state.prices[sz]));
             return `<tr><td>${item}</td>${vals.map(v => `<td>${v}</td>`).join('')}<td>${fNum(mode === 'qty' ? d.totalQty : d.totalCost)}</td></tr>`;
-        }).join('') + `<tr><td>합계</td>${['XL', 'L', 'M', 'S'].map(sz => `<td>${fNum(mode === 'qty' ? colTotals[sz] : colTotals[sz] * PRICES[sz])}</td>`).join('')}<td>${fNum(mode === 'qty' ? colTotals.qty : colTotals.cost)}</td></tr>`;
+        }).join('') + `<tr><td>합계</td>${['XL', 'L', 'M', 'S'].map(sz => `<td>${fNum(mode === 'qty' ? colTotals[sz] : colTotals[sz] * state.prices[sz])}</td>`).join('')}<td>${fNum(mode === 'qty' ? colTotals.qty : colTotals.cost)}</td></tr>`;
     };
 
     renderTable('team-qty-table', teams, matrix, 'qty');
