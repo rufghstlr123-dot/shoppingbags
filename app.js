@@ -234,7 +234,7 @@ function setupEventListeners() {
             // Sync without update loop
             state.realStock[sz] = numVal;
             const now = new Date();
-            const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+            const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')} | ${state.currentUser}(${state.currentUserId})`;
             state.realStockLastUpdated = timeStr;
 
             if (db) {
@@ -288,7 +288,9 @@ function setupEventListeners() {
                     timestamp: now,
                     size: sz,
                     from: oldVal,
-                    to: newVal
+                    to: newVal,
+                    modifierId: state.currentUserId,
+                    modifierName: state.currentUser
                 };
                 state.priceHistory.unshift(log);
                 state.prices[sz] = newVal;
@@ -647,17 +649,22 @@ function exportReportToExcel() {
 function renderPriceHistory() {
     const body = document.getElementById('price-history-body');
     if (!body) return;
+    
     body.innerHTML = state.priceHistory.map(log => `
         <tr>
-            <td>${log.timestamp}</td>
-            <td><span class="badge tag-${log.size.toLowerCase()}">${log.size === 'XL'?'특대':log.size==='L'?'대':log.size==='M'?'중':'소'}</span></td>
-            <td style="color: #94a3b8">${(log.from||0).toLocaleString()}원</td>
-            <td style="font-weight: 700">${(log.to||0).toLocaleString()}원</td>
+            <td style="font-size: 0.85rem;">${log.timestamp}</td>
+            <td><span class="badge tag-${log.size.toLowerCase()}">${log.size === 'XL' ? '특대' : log.size === 'L' ? '대' : log.size === 'M' ? '중' : '소'}</span></td>
+            <td style="color: #94a3b8; font-size: 0.9rem;">${(log.from || 0).toLocaleString()}원</td>
+            <td style="font-weight: 700; font-size: 0.95rem;">${(log.to || 0).toLocaleString()}원</td>
+            <td style="font-size: 0.85rem; color: #64748b;">${log.modifierName || '시스템'}(${log.modifierId || '-'})</td>
             <td style="text-align: right;">
-                <button class="delete-history-btn" onclick="deletePriceHistory(${log.id})">&times;</button>
+                <button class="delete-btn-sm" onclick="deletePriceHistory('${log.id}')">
+                    <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                </button>
             </td>
         </tr>
-    `).join('') || '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 40px;">변경 이력이 없습니다.</td></tr>';
+    `).join('') || '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 40px;">변경 이력이 없습니다.</td></tr>';
+    lucide.createIcons();
 }
 
 function deletePriceHistory(id) {
