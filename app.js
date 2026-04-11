@@ -353,7 +353,7 @@ function setupEventListeners() {
             if (state.users[id]) {
                 // Admin specific check
                 if (id === ADMIN_ID) {
-                    if (pw !== '1234') { 
+                    if (pw !== 'wonfe315!') { 
                         errorMsg.textContent = '비밀번호가 올바르지 않습니다.';
                         errorMsg.style.display = 'block';
                         setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
