@@ -225,10 +225,10 @@ function setupEventListeners() {
     const priceHistModal = document.getElementById('price-history-modal');
     document.getElementById('price-history-btn').addEventListener('click', () => {
         renderPriceHistory();
-        priceHistModal.style.display = 'flex';
+        priceHistModal.classList.add('active');
     });
     document.getElementById('close-price-history').addEventListener('click', () => {
-        priceHistModal.style.display = 'none';
+        priceHistModal.classList.remove('active');
     });
 
     document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);

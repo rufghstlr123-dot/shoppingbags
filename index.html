@@ -659,11 +659,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
 
     <script src="app.js"></script>
-        <div id="price-history-modal" class="modal">
+        <div id="price-history-modal" class="modal-overlay">
             <div class="modal-content history-modal">
                 <div class="modal-header">
-                    <h2><i data-lucide="history"></i> 단가 변경 이력</h2>
-                    <span class="close-modal" id="close-price-history">&times;</span>
+                    <h3><i data-lucide="history"></i> 단가 변경 이력</h3>
+                    <span class="close-modal" id="close-price-history" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
                 </div>
                 <div class="history-list-container">
                     <table class="history-table">
