@@ -327,16 +327,43 @@ function setupEventListeners() {
 
     // Login Form Handler
     const loginForm = document.getElementById('login-form');
+    const usernameInput = document.getElementById('username');
+    const pwGroup = document.getElementById('pw-group');
+    const passwordInput = document.getElementById('password');
+
+    if (usernameInput) {
+        usernameInput.addEventListener('input', (e) => {
+            if (e.target.value === ADMIN_ID) {
+                pwGroup.style.display = 'block';
+                passwordInput.required = true;
+            } else {
+                pwGroup.style.display = 'none';
+                passwordInput.required = false;
+            }
+        });
+    }
+
     if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const id = document.getElementById('username').value;
+            const id = usernameInput.value;
+            const pw = passwordInput.value;
             const errorMsg = document.getElementById('login-error');
 
             if (state.users[id]) {
+                // Admin specific check
+                if (id === ADMIN_ID) {
+                    if (pw !== '1234') { 
+                        errorMsg.textContent = '비밀번호가 올바르지 않습니다.';
+                        errorMsg.style.display = 'block';
+                        setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
+                        return;
+                    }
+                }
                 sessionStorage.setItem('sb_user_id', id);
                 showApp(id, state.users[id]);
             } else {
+                errorMsg.textContent = '등록되지 않은 사원번호입니다.';
                 errorMsg.style.display = 'block';
                 setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
             }
