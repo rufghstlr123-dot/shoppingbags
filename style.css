@@ -1233,7 +1233,7 @@ input:disabled, select:disabled, textarea:disabled {
 /* Dashboard Color Coding */
 .stock-value, .real-input {
     position: absolute;
-    top: 50%; 
+    top: 38%; 
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
