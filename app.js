@@ -32,9 +32,9 @@ let state = {
 };
 
 const USERS = {
-    "1735073": { pw: "1234", name: "이효현 전임" },
-    "2327696": { pw: "1234", name: "이지연 사원" },
-    "2522160": { pw: "1234", name: "신우재 사원" }
+    "1735073": "이효현 전임",
+    "2327696": "이지연 사원",
+    "2522160": "신우재 사원"
 };
 
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
@@ -102,7 +102,7 @@ function initApp() {
     // Session Check
     const savedUserId = sessionStorage.getItem('sb_user_id');
     if (savedUserId && USERS[savedUserId]) {
-        showApp(USERS[savedUserId].name);
+        showApp(USERS[savedUserId]);
     }
 }
 
@@ -293,12 +293,11 @@ function setupEventListeners() {
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const id = document.getElementById('username').value;
-            const pw = document.getElementById('password').value;
             const errorMsg = document.getElementById('login-error');
 
-            if (USERS[id] && USERS[id].pw === pw) {
+            if (USERS[id]) {
                 sessionStorage.setItem('sb_user_id', id);
-                showApp(USERS[id].name);
+                showApp(USERS[id]);
             } else {
                 errorMsg.style.display = 'block';
                 setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
