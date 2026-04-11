@@ -1592,14 +1592,22 @@ input:disabled, select:disabled, textarea:disabled {
 /* Price Settings Panel */
 .price-settings-panel {
     background: white;
-    padding: 16px 24px;
+    padding: 12px 24px;
     border-radius: var(--radius-md);
     margin-bottom: 24px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 32px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border);
+}
+
+.price-settings-panel .panel-left {
+    display: flex;
+    align-items: center;
+    gap: 48px;
+    flex: 1;
 }
 
 .price-settings-panel .panel-title {
@@ -1619,15 +1627,14 @@ input:disabled, select:disabled, textarea:disabled {
 
 .price-inputs {
     display: flex;
-    gap: 16px;
-    flex: 1;
+    gap: 24px;
+    align-items: center;
 }
 
 .price-input-group {
     display: flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
+    gap: 12px;
 }
 
 .price-input-group label {
@@ -1638,14 +1645,14 @@ input:disabled, select:disabled, textarea:disabled {
 }
 
 .price-input-group input {
-    max-width: 100px;
-    padding: 8px 12px;
+    max-width: 90px;
+    padding: 6px 12px;
     font-size: 0.95rem;
     text-align: right;
     border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    border-radius: 6px;
     font-weight: 700;
-    color: var(--primary);
+    color: #000000; /* Changed to Black */
     background: #f8fafc;
 }
 
@@ -1654,4 +1661,54 @@ input:disabled, select:disabled, textarea:disabled {
     box-shadow: 0 0 0 3px rgba(0, 76, 69, 0.05);
     background: white;
 }
+
+#price-history-btn {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* History Modal Specifics */
+.history-modal {
+    max-width: 500px !important;
+}
+
+.history-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-top: 16px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+}
+
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table th {
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    padding: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.history-table td {
+    padding: 12px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.history-table tr:last-child td {
+    border-bottom: none;
+}
+
 

@@ -26,7 +26,8 @@ let state = {
     notepad: '',
     realStock: { XL: 0, L: 0, M: 0, S: 0 },
     realStockLastUpdated: '',
-    prices: { XL: 249, L: 197, M: 171, S: 148 }
+    prices: { XL: 249, L: 197, M: 171, S: 148 },
+    priceHistory: []
 };
 
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
@@ -49,6 +50,7 @@ function initApp() {
                 state.realStock = data.realStock || { XL: 0, L: 0, M: 0, S: 0 };
                 state.realStockLastUpdated = data.realStockLastUpdated || '';
                 state.prices = data.prices || { XL: 249, L: 197, M: 171, S: 148 };
+                state.priceHistory = data.priceHistory || [];
                 
                 // Real-time Global Sync for Notepad & Dashboard
                 const np = document.getElementById('global-notepad');
@@ -185,7 +187,11 @@ function setupEventListeners() {
     // Price Input Listeners
     ['XL', 'L', 'M', 'S'].forEach(sz => {
         const el = document.getElementById(`price-${sz}`);
+        let oldVal = 0;
         if (el) {
+            el.addEventListener('focus', function() {
+                oldVal = state.prices[sz];
+            });
             el.addEventListener('input', function() {
                 let val = this.value.replace(/[^0-9]/g, '');
                 const numVal = parseInt(val, 10) || 0;
@@ -199,8 +205,30 @@ function setupEventListeners() {
                     state.prices[sz] = 0;
                     if (db) db.ref(`sb_inventory/prices/${sz}`).set(0);
                 }
+                const newVal = state.prices[sz];
+                if (oldVal !== newVal) {
+                    const log = {
+                        timestamp: new Date().toLocaleString('ko-KR'),
+                        size: sz,
+                        from: oldVal,
+                        to: newVal
+                    };
+                    state.priceHistory.unshift(log);
+                    if (state.priceHistory.length > 50) state.priceHistory.pop(); // Limit to 50 logs
+                    if (db) db.ref('sb_inventory/priceHistory').set(state.priceHistory);
+                }
             });
         }
+    });
+
+    // Price History Modal
+    const priceHistModal = document.getElementById('price-history-modal');
+    document.getElementById('price-history-btn').addEventListener('click', () => {
+        renderPriceHistory();
+        priceHistModal.style.display = 'flex';
+    });
+    document.getElementById('close-price-history').addEventListener('click', () => {
+        priceHistModal.style.display = 'none';
     });
 
     document.getElementById('export-excel-btn').addEventListener('click', exportToExcel);
@@ -490,6 +518,19 @@ function exportReportToExcel() {
     link.href = URL.createObjectURL(blob);
     link.download = `쇼핑백_분석리포트_${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
+}
+
+function renderPriceHistory() {
+    const body = document.getElementById('price-history-body');
+    if (!body) return;
+    body.innerHTML = state.priceHistory.map(log => `
+        <tr>
+            <td>${log.timestamp}</td>
+            <td><span class="badge tag-${log.size.toLowerCase()}">${log.size === 'XL'?'특대':log.size==='L'?'대':log.size==='M'?'중':'소'}</span></td>
+            <td style="color: #94a3b8">${log.from.toLocaleString()}원</td>
+            <td style="font-weight: 700">${log.to.toLocaleString()}원</td>
+        </tr>
+    `).join('') || '<tr><td colspan="4" style="text-align: center; color: #94a3b8; padding: 40px;">변경 이력이 없습니다.</td></tr>';
 }
 
 function openEditModal(id) {
