@@ -799,15 +799,20 @@ function deleteUser(id) {
 window.deleteUser = deleteUser;
 
 // Admin Event Listeners
-document.getElementById('add-user-btn')?.addEventListener('click', () => {
-    document.getElementById('user-modal').classList.add('active');
+const addUserBtn = document.getElementById('add-user-btn');
+const userModal = document.getElementById('user-modal');
+const closeUserModal = document.getElementById('close-user-modal');
+const saveUserBtn = document.getElementById('save-user-btn');
+
+addUserBtn?.addEventListener('click', () => {
+    userModal.classList.add('active');
 });
 
-document.getElementById('close-user-modal')?.addEventListener('click', () => {
-    document.getElementById('user-modal').classList.remove('active');
+closeUserModal?.addEventListener('click', () => {
+    userModal.classList.remove('active');
 });
 
-document.getElementById('save-user-btn')?.addEventListener('click', () => {
+saveUserBtn?.addEventListener('click', () => {
     const id = document.getElementById('new-user-id').value.trim();
     const name = document.getElementById('new-user-name').value.trim();
     
@@ -819,7 +824,7 @@ document.getElementById('save-user-btn')?.addEventListener('click', () => {
     state.users[id] = name;
     if (db) db.ref('sb_inventory/users').set(state.users);
     
-    document.getElementById('user-modal').classList.remove('active');
+    userModal.classList.remove('active');
     document.getElementById('new-user-id').value = '';
     document.getElementById('new-user-name').value = '';
     showToast('새 계정이 등록되었습니다.', 'success');

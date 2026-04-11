@@ -1139,18 +1139,39 @@ input:disabled, select:disabled, textarea:disabled {
     background: #fef2f2;
 }
 
-/* Admin Panel Styles */
+.primary-btn, .primary-btn-sm {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.primary-btn:hover, .primary-btn-sm:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 76, 69, 0.2);
+}
+
 .admin-panel {
     background: white;
     border-radius: var(--radius-lg);
-    padding: 32px;
+    padding: 24px;
 }
 
 .admin-header {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end; /* Push add button to right */
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
 }
 
 .admin-title-wrap {
