@@ -32,9 +32,9 @@ let state = {
 };
 
 const USERS = {
-    "1735073": "1234",
-    "2327696": "1234",
-    "2522160": "1234"
+    "1735073": { pw: "1234", name: "이효현 전임" },
+    "2327696": { pw: "1234", name: "이지연 사원" },
+    "2522160": { pw: "1234", name: "신우재 사원" }
 };
 
 const PARTS = ["남성패션", "여성패션", "해외패션", "영패션", "아동스포츠", "리빙", "식품", "기타"];
@@ -100,19 +100,19 @@ function initApp() {
     if (reportEnd) reportEnd.value = formatDate(lastDay);
 
     // Session Check
-    const savedUser = sessionStorage.getItem('sb_user');
-    if (savedUser) {
-        showApp(savedUser);
+    const savedUserId = sessionStorage.getItem('sb_user_id');
+    if (savedUserId && USERS[savedUserId]) {
+        showApp(USERS[savedUserId].name);
     }
 }
 
-function showApp(username) {
-    state.currentUser = username;
+function showApp(displayName) {
+    state.currentUser = displayName;
     const loginPage = document.getElementById('login-page');
     const app = document.querySelector('.app-container');
     const displayUser = document.getElementById('display-user');
     
-    if (displayUser) displayUser.innerHTML = `<i data-lucide="user"></i> ${username}님`;
+    if (displayUser) displayUser.innerHTML = `<i data-lucide="user"></i> ${displayName}님`;
     
     loginPage.style.opacity = '0';
     loginPage.style.pointerEvents = 'none';
@@ -126,7 +126,7 @@ function showApp(username) {
 }
 
 function handleLogout() {
-    sessionStorage.removeItem('sb_user');
+    sessionStorage.removeItem('sb_user_id');
     location.reload();
 }
 
@@ -296,9 +296,9 @@ function setupEventListeners() {
             const pw = document.getElementById('password').value;
             const errorMsg = document.getElementById('login-error');
 
-            if (USERS[id] && USERS[id] === pw) {
-                sessionStorage.setItem('sb_user', id);
-                showApp(id);
+            if (USERS[id] && USERS[id].pw === pw) {
+                sessionStorage.setItem('sb_user_id', id);
+                showApp(USERS[id].name);
             } else {
                 errorMsg.style.display = 'block';
                 setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
