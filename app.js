@@ -123,6 +123,7 @@ function initApp() {
         db.ref('sb_inventory/users').once('value', (snap) => {
             const users = snap.val() || {};
             if (users[savedUserId]) {
+                state.users = users;
                 showApp(savedUserId, users[savedUserId]);
             } else {
                 sessionStorage.removeItem('sb_user_id');
@@ -141,7 +142,6 @@ function toggleAdminTab(userId) {
 function showApp(userId, username) {
     state.currentUserId = userId;
     state.currentUser = username;
-    
     toggleAdminTab(userId);
 
     const loginPage = document.getElementById('login-page');
@@ -331,9 +331,9 @@ function setupEventListeners() {
             const id = document.getElementById('username').value;
             const errorMsg = document.getElementById('login-error');
 
-            if (USERS[id]) {
+            if (state.users[id]) {
                 sessionStorage.setItem('sb_user_id', id);
-                showApp(USERS[id]);
+                showApp(id, state.users[id]);
             } else {
                 errorMsg.style.display = 'block';
                 setTimeout(() => { errorMsg.style.display = 'none'; }, 3000);
