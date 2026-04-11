@@ -226,8 +226,10 @@ function setupEventListeners() {
             if (changed) {
                 if (state.priceHistory.length > 50) state.priceHistory.pop();
                 if (db) {
-                    db.ref('sb_inventory/prices').set(state.prices);
-                    db.ref('sb_inventory/priceHistory').set(state.priceHistory);
+                    db.ref('sb_inventory').update({
+                        prices: state.prices,
+                        priceHistory: state.priceHistory
+                    });
                 }
                 showToast('단가가 성공적으로 변경되었습니다.', 'success');
             } else {
