@@ -435,39 +435,30 @@
 
                 <!-- Reports Tab -->
                 <section id="reports" class="tab-content">
-                    <!-- Added Remaining Stock Section -->
-                    <div class="dashboard-section" data-type="stock" style="margin-top: 20px;">
-                        <div class="section-title">
-                            <h3>잔여 수량 (실시간)</h3>
+                    <!-- Card Style Remaining Stock Section -->
+                    <div class="card" style="margin-top: 20px; margin-bottom: 24px;">
+                        <div class="card-header">
+                            <div class="section-title">
+                                <h3>조회 기간 최종 재고 (기말 재고)</h3>
+                            </div>
                         </div>
-                        <div class="stock-cards-grid">
-                            <div class="stock-card" data-size="XL">
-                                <div class="card-head">
-                                    <span class="badge tag-xl">특대</span>
-                                    <i data-lucide="package"></i>
-                                </div>
-                                <div class="stock-value" id="report-stock-XL">0</div>
-                            </div>
-                            <div class="stock-card" data-size="L">
-                                <div class="card-head">
-                                    <span class="badge tag-l">대</span>
-                                    <i data-lucide="package"></i>
-                                </div>
-                                <div class="stock-value" id="report-stock-L">0</div>
-                            </div>
-                            <div class="stock-card" data-size="M">
-                                <div class="card-head">
-                                    <span class="badge tag-m">중</span>
-                                    <i data-lucide="package"></i>
-                                </div>
-                                <div class="stock-value" id="report-stock-M">0</div>
-                            </div>
-                            <div class="stock-card" data-size="S">
-                                <div class="card-head">
-                                    <span class="badge tag-s">소</span>
-                                    <i data-lucide="box"></i>
-                                </div>
-                                <div class="stock-value" id="report-stock-S">0</div>
+                        <div class="card-content">
+                            <div class="overflow-x">
+                                <table id="report-stock-table" class="matrix-table">
+                                    <thead>
+                                        <tr>
+                                            <th>구분</th>
+                                            <th>특대</th>
+                                            <th>대</th>
+                                            <th>중</th>
+                                            <th>소</th>
+                                            <th>합계</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- JS will inject the stock row here -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

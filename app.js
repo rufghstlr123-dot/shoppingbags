@@ -529,10 +529,6 @@ function renderDashboard() {
         const stock = totals.in[sz] - totals.out[sz];
         const real = state.realStock ? (state.realStock[sz] || 0) : 0;
         document.getElementById(`stock-${sz}`).textContent = stock.toLocaleString();
-        const reportStockEl = document.getElementById(`report-stock-${sz}`);
-        if (reportStockEl) {
-            reportStockEl.textContent = stock.toLocaleString();
-        }
         document.getElementById(`in-${sz}`).textContent = totals.in[sz].toLocaleString();
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
         
@@ -641,6 +637,7 @@ function exportReportToExcel() {
     csvContent += `기간: ${document.getElementById('report-start-date').value} ~ ${document.getElementById('report-end-date').value}\n\n`;
 
     const tables = [
+        { id: 'report-stock-table', title: '조회 기간 최종 재고 (기말 재고)' },
         { id: 'team-qty-table', title: '팀별 불출 현황 (수량)' },
         { id: 'team-cost-table', title: '팀별 불출 현황 (가격)' },
         { id: 'part-qty-table', title: '파트별 불출 현황 (수량)' },
@@ -787,6 +784,34 @@ function deleteFromModal() {
 function renderReports() {
     const start = document.getElementById('report-start-date').value;
     const end = document.getElementById('report-end-date').value;
+
+    // 1. Calculate Stock as of the End Date (Cumulative up to 'end')
+    const stockSnapshot = { XL: 0, L: 0, M: 0, S: 0 };
+    state.entries.forEach(e => {
+        if (!end || e.date <= end) {
+            ['XL', 'L', 'M', 'S'].forEach(sz => {
+                const q = e.quantities[sz] || 0;
+                if (e.type === 'in') stockSnapshot[sz] += q;
+                else stockSnapshot[sz] -= q;
+            });
+        }
+    });
+
+    const stockBody = document.querySelector('#report-stock-table tbody');
+    if (stockBody) {
+        const totalStock = Object.values(stockSnapshot).reduce((a, b) => a + b, 0);
+        stockBody.innerHTML = `
+            <tr>
+                <td><strong>기말 재고</strong></td>
+                <td>${stockSnapshot.XL.toLocaleString()}</td>
+                <td>${stockSnapshot.L.toLocaleString()}</td>
+                <td>${stockSnapshot.M.toLocaleString()}</td>
+                <td>${stockSnapshot.S.toLocaleString()}</td>
+                <td><strong>${totalStock.toLocaleString()}</strong></td>
+            </tr>
+        `;
+    }
+
     const filtered = state.entries.filter(e => e.type === 'out' && (!start || e.date >= start) && (!end || e.date <= end));
     const teams = ['패션팀', '라이프스타일팀', '기타'];
     const matrix = {}; teams.forEach(t => matrix[t] = { XL:0, L:0, M:0, S:0, totalQty:0, totalCost:0 });
