@@ -435,8 +435,21 @@
 
                 <!-- Reports Tab -->
                 <section id="reports" class="tab-content">
-                    <!-- Card Style Remaining Stock Section -->
-                    <div class="card" style="margin-top: 20px; margin-bottom: 24px;">
+                    <div class="analysis-controls">
+                        <div class="filter-group">
+                            <div class="date-range-filter">
+                                <input type="text" id="report-start-date" placeholder="시작일" maxlength="10">
+                                <span>~</span>
+                                <input type="text" id="report-end-date" placeholder="종료일" maxlength="10">
+                            </div>
+                        </div>
+                        <button class="export-btn" id="export-report-btn">
+                            <i data-lucide="download"></i> 엑셀 다운로드
+                        </button>
+                    </div>
+
+                    <!-- Card Style Remaining Stock Section (Moved) -->
+                    <div class="card" style="margin-bottom: 24px;">
                         <div class="card-header">
                             <div class="section-title">
                                 <h3>조회 기간 최종 재고 (기말 재고)</h3>
@@ -461,19 +474,6 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="analysis-controls">
-                        <div class="filter-group">
-                            <div class="date-range-filter">
-                                <input type="text" id="report-start-date" placeholder="시작일" maxlength="10">
-                                <span>~</span>
-                                <input type="text" id="report-end-date" placeholder="종료일" maxlength="10">
-                            </div>
-                        </div>
-                        <button class="export-btn" id="export-report-btn">
-                            <i data-lucide="download"></i> 엑셀 다운로드
-                        </button>
                     </div>
 
                     <div class="report-tables-container">
