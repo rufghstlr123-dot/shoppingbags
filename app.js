@@ -529,6 +529,10 @@ function renderDashboard() {
         const stock = totals.in[sz] - totals.out[sz];
         const real = state.realStock ? (state.realStock[sz] || 0) : 0;
         document.getElementById(`stock-${sz}`).textContent = stock.toLocaleString();
+        const reportStockEl = document.getElementById(`report-stock-${sz}`);
+        if (reportStockEl) {
+            reportStockEl.textContent = stock.toLocaleString();
+        }
         document.getElementById(`in-${sz}`).textContent = totals.in[sz].toLocaleString();
         document.getElementById(`out-${sz}`).textContent = totals.out[sz].toLocaleString();
         
